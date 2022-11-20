@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card bg-light mb-3 mt-3">
+                    <div class="card-body">
+                        {% if notifications|length > 0 %}
+                        <div class="card-header text-center border-0 mb-2">
+                            We continuously monitor Syngeos by <a href="{{ path('app_notification') }}">added
+                                checking-requests</a>.
+                            <br>If there are any performance or service interruptions, an update will be posted here.
+                        </div>
+                        {% set allSystemOperational = true %}
+                        {% if allSystemOperational %}
+                            <div class="row font-weight-bold alert alert-success m-sm-auto border-0">
+                                <div class="col-12 text-left">All Systems Operational</div>
+                            </div>
+                        {% elseif not allSystemOperational %}
+                            <div class="row font-weight-bold alert alert-danger m-sm-auto border-0">
+                                <div class="col-12 text-left">Some error exists</div>
+                            </div>
+                        {% endif %}
+
+
+                        {% for notification in notifications %}
+                            <br>
+                            <div class="row m-auto border-0 small">
+                                <div class="col-8 text-left">url: {{ notification.url }}</div>
+                                <div class="col-4 text-right">Status:</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                        <div class="text-center">
+                            No status-check request have been added yet...
+                            <br>
+                            <br>
+                            <a href="{{ path('app_notification_create') }}" class="btn btn-info">
+                                Add first status-check request >>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
