@@ -12,3 +12,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+###> jetbrains/ide ###
+/.idea
+###< jetbrains/ide ###

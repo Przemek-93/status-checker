@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card bg-light mb-3 mt-3">
+                    <div class="card-body">
+                        {% if app.user %}
+                        {% if notifications|length > 0 %}
+                            <div class="card-header table-responsive">List of all status-check requests</div>
+                                <table class="table text-center table-striped" style="table-layout: fixed;">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" style="width: 4%" class="align-middle">#</th>
+                                            <th scope="col" style="width: 26%" class="align-middle">Url</th>
+                                            <th scope="col" style="width: 7%" class="align-middle">Type</th>
+                                            <th scope="col" style="width: 10%" class="align-middle">Checking frequency</th>
+                                            <th scope="col" style="width: 26%" class="align-middle">Receivers</th>
+                                            <th scope="col" style="width: 10%" class="align-middle">Created at</th>
+                                            <th scope="col" style="width: 7%" class="align-middle">Active</th>
+                                            <th scope="col" style="width: 10%" class="align-middle">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for key, item in notifications %}
+                                            {% set receivers = '' %}
+                                            {% for receiver in item.receivers %}
+                                                {%  set receivers = receivers ~ receiver.email ~ ' '%}
+                                            {% endfor %}
+                                            <tr>
+                                                <th scope="row" class="align-middle">{{ key + 1 }}</th>
+                                                <td class="align-middle">{{ item.url }}</td>
+                                                <td class="align-middle">{{ item.type }}</td>
+                                                <td class="align-middle">every {{ item.sendingFrequency }} hour/s</td>
+                                                <td class="align-middle">{{ receivers }}</td>
+                                                <td class="align-middle">{{ item.createdAt | date('Y-m-d H:i:s') }}</td>
+                                                <td class="align-middle">{{ item.isActive ? 'Yes' : 'No' }}</td>
+                                                <td class="align-middle">
+                                                    <div class="btn-group">
+                                                    <a class="btn btn-outline-danger" href="{{ path('app_notification_remove', {'id': item.id}) }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
+                                                    <a class="btn btn-outline-primary" href="{{ path('app_notification_edit', {'id': item.id}) }}">
+                                                        <i class="bi bi-pen"></i>
+                                                    </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        {% else %}
+                            <div class="text-center">
+                                No requests have been added yet...
+                                <br>
+                                <br>
+                                <a href="{{ path('app_notification_create') }}" class="btn btn-info">
+                                     Add first status-check request >>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% elseif not app.user %}
+                        <div class="text-center">
+                            <a href="{{ path('app_login') }}" class="btn btn-info">Log In >></a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
