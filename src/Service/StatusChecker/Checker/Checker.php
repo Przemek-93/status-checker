@@ -18,10 +18,20 @@ class Checker
 
     public function check(Notification $notification): NotificationReading
     {
+        $response = $this->httpClient->request(
+            $notification->getHttpMethod(),
+            $notification->getUrl()
+        );
+
+        $content = $response->getContent(false);
+        if (mb_strlen($content) >= 2000) {
+            $content = mb_substr($content, 0, 2000) . '...';
+        }
+
         return $this->transformer->transform(
-            $this->httpClient->request(
-                $notification->getHttpMethod(),
-                $notification->getUrl()
+            new Response(
+                $response->getStatusCode(),
+                json_decode($content, true) ?? [trim($content)]
             )
         );
     }

@@ -53,7 +53,7 @@ class NotificationReading
         return $this->id;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?int
     {
         return $this->status;
     }

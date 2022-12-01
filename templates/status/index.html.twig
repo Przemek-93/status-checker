@@ -5,44 +5,134 @@
             <div class="col-md-12">
                 <div class="card bg-light mb-3 mt-3">
                     <div class="card-body">
-                        {% if notifications|length > 0 %}
                         <div class="card-header text-center border-0 mb-2">
-                            We continuously monitor Syngeos by <a href="{{ path('app_notification') }}">added
-                                checking-requests</a>.
-                            <br>If there are any performance or service interruptions, an update will be posted here.
-                        </div>
-                        {% set allSystemOperational = true %}
-                        {% if allSystemOperational %}
-                            <div class="row font-weight-bold alert alert-success m-sm-auto border-0">
-                                <div class="col-12 text-left">All Systems Operational</div>
+                            <div>
+                                We continuously monitor Syngeos by <a href="{{ path('app_notification') }}">added
+                                    checking-requests</a>.
+                                <br>If there are any performance or service interruptions, an update will be posted
+                                here.
                             </div>
-                        {% elseif not allSystemOperational %}
-                            <div class="row font-weight-bold alert alert-danger m-sm-auto border-0">
-                                <div class="col-12 text-left">Some error exists</div>
+                        </div>
+                        {% if notifications|length > 0 %}
+                            {% set hasFailedReadings = false %}
+                            {% for notification in notifications %}
+                                {% if notification.hasFailedReadings %}
+                                    {% set hasFailedReadings = true %}
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if hasFailedReadings %}
+                                <div class="row font-weight-bold alert alert-danger m-sm-auto border-0">
+                                    <div class="col-10 text-left">Some error exists <i
+                                                class="bi bi-building-exclamation"></i></div>
+                                    <a href="{{ path('app_status_recheck') }}" style="color:#721c24"
+                                       class="col-2 text-right">
+                                        <i class="bi bi-repeat"></i> Check
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="row font-weight-bold alert alert-success m-sm-auto border-0">
+                                    <div class="col-10 text-left">All Systems Operational <i
+                                                class="bi bi-check2-square"></i></div>
+                                    <a href="{{ path('app_status_recheck') }}" style="color:#155724"
+                                       class="col-2 text-right">
+                                        <i class="bi bi-repeat"></i> Recheck
+                                    </a>
+                                </div>
+                            {% endif %}
+
+                            {% for notification in notifications %}
+                                <br>
+                                <div class="row m-auto border-0 small">
+                                    <a href="{{ notification.url }}" target="_blank"
+                                       class="col-8 text-left font-weight-bold">
+                                        <i class="bi bi-browser-chrome"></i> {{ notification.url }}
+                                    </a>
+                                    <div class="col-4 text-right font-weight-bold">
+                                        {% if notification.hasFailedReadings %}
+                                            <span class="alert-danger"><i class="bi bi-x"></i> ERROR</span>
+                                        {% else %}
+                                            <span class="alert-success"><i class="bi bi-check"></i> OPERATIONAL</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-12 text-left font-weight-bold">
+                                        Readings
+                                        <span style="color: black;font-size: 9px;vertical-align:top;">
+                                            {{ notification.readings | length }}
+                                        </span>
+                                        <i class="bi bi-chevron-expand row-readings-expand"
+                                           itemid="row-readings-{{ notification.id }}"
+                                           style="cursor: pointer"></i>
+                                    </div>
+                                    {% for reading in notification.readings %}
+                                        <div class="col-8 text-left row-readings-{{ notification.id }} d-none">
+                                            <div class="row">
+                                                <div class="col-11" id="reading-content-{{ reading.id }}"
+                                                     style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
+                                                    {{ reading.content | json_encode(constant('JSON_PRETTY_PRINT')) }}
+                                                </div>
+                                                <div class="col-1">
+                                                    <i class="bi bi-chevron-expand reading-expand-content"
+                                                       style="cursor: pointer"
+                                                       itemid="reading-content-{{ reading.id }}"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-2 text-center font-weight-bold row-readings-{{ notification.id }} d-none">
+                                            <i class="bi bi-calendar-check"></i> {{ reading.readAt | date('Y-m-d H:i:s') }}
+                                        </div>
+                                        <div class="col-2 text-right font-weight-bold row-readings-{{ notification.id }} d-none">
+                                            {% if reading.isFailed %}
+                                                <span class="alert-danger">error {{ reading.status }}</span>
+                                            {% else %}
+                                                <span class="alert-success">success {{ reading.status }}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center">
+                                No status-check request have been added yet...
+                                <br>
+                                <br>
+                                <a href="{{ path('app_notification_create') }}" class="btn btn-info">
+                                    Add first status-check request >>
+                                </a>
                             </div>
                         {% endif %}
-
-
-                        {% for notification in notifications %}
-                            <br>
-                            <div class="row m-auto border-0 small">
-                                <div class="col-8 text-left">url: {{ notification.url }}</div>
-                                <div class="col-4 text-right">Status:</div>
-                            </div>
-                        {% endfor %}
                     </div>
-                    {% else %}
-                        <div class="text-center">
-                            No status-check request have been added yet...
-                            <br>
-                            <br>
-                            <a href="{{ path('app_notification_create') }}" class="btn btn-info">
-                                Add first status-check request >>
-                            </a>
-                        </div>
-                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    <script>
+        jQuery(document).ready(function () {
+            jQuery('.reading-expand-content').click(function (e) {
+                var $itemId = $(this).attr('itemid');
+                var content = $('#' + $itemId);
+                if (content.css('white-space') === 'nowrap') {
+                    $(this).toggleClass('bi-chevron-expand bi-chevron-contract')
+                    content.css({'white-space': 'break-spaces'})
+                } else {
+                    $(this).toggleClass('bi-chevron-contract bi-chevron-expand')
+                    content.css({'white-space': 'nowrap'})
+                }
+            });
+
+            jQuery('.row-readings-expand').click(function (e) {
+                var $itemId = $(this).attr('itemid');
+                var content = $('.' + $itemId);
+                if (content.css('display') === 'none') {
+                    $(this).toggleClass('bi-chevron-expand bi-chevron-contract')
+                    content.toggleClass('d-none d-block')
+                } else {
+                    $(this).toggleClass('bi-chevron-contract bi-chevron-expand')
+                    content.toggleClass('d-block d-none ')
+                }
+            });
+        });
+    </script>
 {% endblock %}
