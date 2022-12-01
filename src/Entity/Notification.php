@@ -291,7 +291,7 @@ class Notification
         return $this;
     }
 
-    public function hasFailedReadings(): bool
+    public function getHasFailedReadings(): bool
     {
         $hasFailed = false;
         if ($this->readings->count()) {

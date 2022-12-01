@@ -61,6 +61,19 @@ class NotificationRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getActiveNotificationWithReadings(): array
+    {
+        return $this->createQueryBuilder('n')
+            ->select(['n', 'nr'])
+            ->leftJoin('n.readings', 'nr')
+            ->where('n.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->orderBy('nr.readAt', 'DESC')
+            ->addOrderBy('n.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function getAllNotificationRequestsContainsReadings(): array
     {
         return $this->createQueryBuilder('n')

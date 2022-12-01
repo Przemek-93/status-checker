@@ -62,7 +62,9 @@
                         {% endif %}
                     {% elseif not app.user %}
                         <div class="text-center">
-                            <a href="{{ path('app_login') }}" class="btn btn-info">Log In >></a>
+                            <a href="{{ path('app_login') }}" class="btn btn-info">
+                                <i class="bi bi-door-open"></i> Log In
+                            </a>
                         </div>
                     {% endif %}
                 </div>

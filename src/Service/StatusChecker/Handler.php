@@ -7,15 +7,17 @@ namespace App\Service\StatusChecker;
 use App\Service\StatusChecker\Checker\Checker;
 use App\Service\StatusChecker\Sender\SendData;
 use App\Service\StatusChecker\Sender\Sender;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
 
 class Handler
 {
     public function __construct(
-        protected Checker $checker,
-        protected LoggerInterface $logger,
-        protected Sender $sender
+        protected readonly Checker $checker,
+        protected readonly LoggerInterface $logger,
+        protected readonly Sender $sender,
+        protected readonly EntityManagerInterface $entityManager
     ) {
     }
 
@@ -49,5 +51,26 @@ class Handler
         $this->sender->send($sendDataArray);
 
         return $results;
+    }
+
+    public function bulkChecking(array $notifications): array
+    {
+        foreach ($notifications as $notification) {
+            try {
+                $notification->addReading($this->checker->check($notification));
+            } catch (Throwable $throwable) {
+                $this->logger->error(
+                    sprintf(
+                        'Something went wrong while checking status, request id: %d, error: %s',
+                        $notification->getId(),
+                        $throwable->getMessage()
+                    )
+                );
+            }
+        }
+
+        $this->entityManager->flush();
+
+        return $notifications;
     }
 }
