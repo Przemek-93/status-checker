@@ -40,7 +40,7 @@ class ExecuteStatusCheckerCommand extends Command
             ['found', 'success', 'failed'],
             [[count($notifications), $results['success'], $results['failed']]]
         );
-        $symfonyStyle->success('Process has been complete.');
+        $symfonyStyle->success('Process has been completed.');
 
         return Command::SUCCESS;
     }
