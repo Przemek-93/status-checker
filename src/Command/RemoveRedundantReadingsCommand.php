@@ -5,45 +5,63 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\NotificationRepository;
-use App\Service\StatusChecker\Checker\Checker;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Throwable;
 
 #[AsCommand(
-    name: 'status-checker:check',
-    description: 'Run status checking for all active requests.'
+    name: 'status-checker:remove-readings',
+    description: 'Remove redundant readings.'
 )]
-class CheckStatusesCommand extends Command
+class RemoveRedundantReadingsCommand extends Command
 {
     public function __construct(
         protected NotificationRepository $notificationRepository,
-        protected Checker $checker,
         protected EntityManagerInterface $entityManager,
         protected LoggerInterface $logger
     ) {
         parent::__construct();
     }
 
+    protected function configure(): void
+    {
+        $this
+            ->addOption(
+                name: 'readings-count',
+                mode: InputOption::VALUE_REQUIRED,
+                description: 'Number of readings to keep (ordered by date).',
+                default: 20
+            );
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
-        $symfonyStyle->title('Starting process of checking statuses...');
-        $notifications = $this->notificationRepository->getActiveNotificationRequests();
+        $symfonyStyle->title('Starting process of removing readings...');
+        $readingsCount = $input->getOption('readings-count');
+        $notifications = $this->notificationRepository->getActiveNotificationWithReadings();
         $symfonyStyle->progressStart(count($notifications));
         foreach ($notifications as $notification) {
-            $symfonyStyle->progressAdvance();
             try {
-                $notification->addReading($this->checker->check($notification));
+                $readings = $notification->getReadings();
+                if ($readings->count() > $readingsCount) {
+                    $symfonyStyle->progressAdvance();
+                    foreach ($readings as $key => $reading) {
+                        if ($key >= $readingsCount) {
+                            $this->entityManager->remove($reading);
+                        }
+                    }
+                }
             } catch (Throwable $throwable) {
                 $this->logger->error(
                     sprintf(
-                        'Something went wrong while checking status, request id: %d, error: %s',
+                        'Something went wrong while removing reading, request id: %d, error: %s',
                         $notification->getId(),
                         $throwable->getMessage()
                     )
@@ -52,7 +70,7 @@ class CheckStatusesCommand extends Command
         }
 
         $this->entityManager->flush();
-        $symfonyStyle->success('Process has been completed.');
+        $symfonyStyle->success('Removing process has been completed.');
 
         return Command::SUCCESS;
     }
