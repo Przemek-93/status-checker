@@ -14,22 +14,4 @@ class ReadingRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, NotificationReading::class);
     }
-
-    public function save(NotificationReading $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(NotificationReading $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
 }

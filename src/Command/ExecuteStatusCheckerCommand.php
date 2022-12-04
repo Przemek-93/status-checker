@@ -12,7 +12,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Throwable;
 
 #[AsCommand(
     name: 'status-checker:execute',
@@ -35,7 +34,6 @@ class ExecuteStatusCheckerCommand extends Command
         $notifications = $this->notificationRepository->getAvailableNotificationRequests();
         $results = $this->checkerHandler->handle($notifications);
         $this->entityManager->flush();
-
         $symfonyStyle->table(
             ['found', 'success', 'failed'],
             [[count($notifications), $results['success'], $results['failed']]]
