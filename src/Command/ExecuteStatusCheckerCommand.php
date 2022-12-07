@@ -31,12 +31,20 @@ class ExecuteStatusCheckerCommand extends Command
     {
         $symfonyStyle = new SymfonyStyle($input, $output);
         $symfonyStyle->title('Starting process of status-checking and notify...');
-        $notifications = $this->notificationRepository->getAvailableNotificationRequests();
+        $notifications = $this->notificationRepository->getAvailableForExecuteNotifications();
         $results = $this->checkerHandler->handle($notifications);
         $this->entityManager->flush();
+        $found = count($notifications);
         $symfonyStyle->table(
-            ['found', 'success', 'failed'],
-            [[count($notifications), $results['success'], $results['failed']]]
+            ['found', 'success', 'failed', 'sent'],
+            [
+                [
+                    $found,
+                    $found - ($results['failed'] + $results['sent']),
+                    $results['failed'],
+                    $results['sent']
+                ]
+            ]
         );
         $symfonyStyle->success('Process has been completed.');
 

@@ -16,7 +16,7 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    public function getAvailableNotificationRequests(): array
+    public function getAvailableForExecuteNotifications(): array
     {
         return $this->createQueryBuilder('n')
             ->select('n', 'nr')

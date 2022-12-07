@@ -16,9 +16,11 @@ framework:
             # sync: 'sync://'
 
         routing:
-            Symfony\Component\Mailer\Messenger\SendEmailMessage: async
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
+
+            # uncomment this routing to handle send email message by messenger instead sending immediately
+            # Symfony\Component\Mailer\Messenger\SendEmailMessage: async
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async
