@@ -14,22 +14,4 @@ class NotificationReceiverRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, NotificationReceiver::class);
     }
-
-    public function save(NotificationReceiver $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(NotificationReceiver $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
 }

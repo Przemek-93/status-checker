@@ -26,4 +26,4 @@ services:
     App\Service\StatusChecker\Sender\Sender:
         class: 'App\Service\StatusChecker\Sender\Sender'
         arguments:
-            $sentFrom: '%mailer_address_from%'
+            $addressFrom: '%mailer_address_from%'

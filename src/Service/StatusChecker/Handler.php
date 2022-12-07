@@ -9,6 +9,7 @@ use App\Service\StatusChecker\Sender\SendData;
 use App\Service\StatusChecker\Sender\Sender;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use DateTime;
 use Throwable;
 
 class Handler
@@ -23,16 +24,23 @@ class Handler
 
     public function handle(array $notifications): array
     {
-        $results = ['success' => 0, 'failed' => 0];
+        $results = ['failed' => 0, 'sent' => 0];
         $sendDataArray = [];
         foreach ($notifications as $notification) {
             try {
                 $reading = $this->checker->check($notification);
                 $notification->addReading($reading);
-                $results['success']++;
-                foreach ($notification->getReceivers() as $receiver) {
-                    $sendDataArray[$receiver->getEmail()][] = new SendData($notification, $reading);
+                if ($reading->isFailed()) {
+                    foreach ($notification->getReceivers() as $receiver) {
+                        $email = $receiver->getEmail();
+                            $sendDataArray[$email][] = new SendData(
+                                $notification,
+                                $reading,
+                                $email
+                            );
+                    }
                 }
+
                 $notification->setSendingDate();
             } catch (Throwable $throwable) {
                 $results['failed']++;
@@ -48,7 +56,16 @@ class Handler
             }
         }
 
-        $this->sender->send($sendDataArray);
+        foreach ($sendDataArray as $receiver => $array) {
+            $this->sender->send(
+                ['data' => $array],
+                'emails/alert.html.twig',
+                $receiver,
+                'Status-checker ALERT! - ' .
+                (new DateTime())->format('Y-m-d H:i:s')
+            );
+            $results['sent']++;
+        }
 
         return $results;
     }

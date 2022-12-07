@@ -36,7 +36,7 @@ class RemoveRedundantReadingsCommand extends Command
                 name: 'readings-count',
                 mode: InputOption::VALUE_REQUIRED,
                 description: 'Number of readings to keep (ordered by date).',
-                default: 20
+                default: 30
             );
     }
 
@@ -47,6 +47,7 @@ class RemoveRedundantReadingsCommand extends Command
         $readingsCount = $input->getOption('readings-count');
         $notifications = $this->notificationRepository->getActiveNotificationWithReadings();
         $symfonyStyle->progressStart(count($notifications));
+        $removed = 0;
         foreach ($notifications as $notification) {
             try {
                 $readings = $notification->getReadings();
@@ -55,6 +56,7 @@ class RemoveRedundantReadingsCommand extends Command
                     foreach ($readings as $key => $reading) {
                         if ($key >= $readingsCount) {
                             $this->entityManager->remove($reading);
+                            $removed++;
                         }
                     }
                 }
@@ -70,7 +72,10 @@ class RemoveRedundantReadingsCommand extends Command
         }
 
         $this->entityManager->flush();
-        $symfonyStyle->success('Removing process has been completed.');
+        $symfonyStyle->success(sprintf(
+                'Process has been completed. [%d] readings has been removed.',
+                $removed
+        ));
 
         return Command::SUCCESS;
     }

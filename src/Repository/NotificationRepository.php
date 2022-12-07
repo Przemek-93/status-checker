@@ -16,25 +16,7 @@ class NotificationRepository extends ServiceEntityRepository
         parent::__construct($registry, Notification::class);
     }
 
-    public function save(Notification $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function remove(Notification $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    public function getAvailableNotificationRequests(): array
+    public function getAvailableForExecuteNotifications(): array
     {
         return $this->createQueryBuilder('n')
             ->select('n', 'nr')
@@ -70,18 +52,6 @@ class NotificationRepository extends ServiceEntityRepository
             ->setParameter('isActive', true)
             ->orderBy('nr.readAt', 'DESC')
             ->addOrderBy('n.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function getAllNotificationRequestsContainsReadings(): array
-    {
-        return $this->createQueryBuilder('n')
-            ->select('n', 'nr')
-            ->leftJoin('n.readings', 'nr')
-            ->where('n.isActive = :isActive')
-            ->andWhere('count(nr.id) != 0')
-            ->setParameter('isActive', true)
             ->getQuery()
             ->getResult();
     }

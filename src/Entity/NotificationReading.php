@@ -12,7 +12,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Exception;
 
 #[ORM\Entity(repositoryClass: ReadingRepository::class)]
-#[ORM\HasLifecycleCallbacks]
 class NotificationReading
 {
     public const READING_STATUSES_OK = [
@@ -32,21 +31,31 @@ class NotificationReading
     #[Assert\NotBlank]
     #[Assert\PositiveOrZero]
     #[Assert\Type(type: 'int')]
-    private ?int $status = null;
+    private int $status;
 
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'array')]
-    private array $content = [];
+    private array $content;
 
     #[ORM\Column]
     #[Assert\NotNull]
     #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $readAt = null;
+    private DateTimeImmutable $readAt;
 
     #[ORM\ManyToOne(inversedBy: 'readings')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Notification $notification = null;
+
+    public function __construct(
+        int $status,
+        DateTimeImmutable $readAt,
+        array $content = [],
+    ) {
+        $this->status = $status;
+        $this->readAt = $readAt;
+        $this->content = $content;
+    }
 
     public function getId(): ?int
     {
@@ -58,36 +67,14 @@ class NotificationReading
         return $this->status;
     }
 
-    public function setStatus(int $status): self
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
     public function getContent(): array
     {
         return $this->content;
     }
 
-    public function setContent(array $content): self
-    {
-        $this->content = $content;
-
-        return $this;
-    }
-
     public function getReadAt(): ?DateTimeImmutable
     {
         return $this->readAt;
-    }
-
-    #[ORM\PrePersist]
-    public function setReadAt(): self
-    {
-        $this->readAt = new DateTimeImmutable();
-
-        return $this;
     }
 
     public function getNotification(): ?Notification
