@@ -20,18 +20,20 @@ The system fetch the readings and stores them in a database, it has a number of 
 
 ### Application command
 
+The text file with the cron configuration can be found [here](./cron.txt) 
+
 * te execute checking statuses
   run `bin/console status-checker:check` - command trigger a checking of all active checking-requests
-    - this command can be run less frequently, 3 times a day
+    - this command can be run less frequently, few times (5-6) a day
 
 
 * to remove outdated readings
   run `bin/console status-checker:remove-readings --readings-count 30` - command will keep the number of `30` most recent readings, the rest will be deleted
     - `--readings-count` - count of reading that will be retained in the database, defaults to `30` so you can omit this argument
-    - this command should be executed every 2 hours
+    - this command should be executed every hour after status-checker:execute
 
 
 * main process, to run a check and send an email alert when something goes wrong
   run `bin/console status-checker:execute` - command will first run a checking and check all active requests, 
   then will save the readings to the database and finally will send a notification to the saved notification-email addresses if something is wrong
-    - this command should be executed every hour
+    - this command should be executed twice per hour
