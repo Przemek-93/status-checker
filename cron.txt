@@ -1,0 +1,10 @@
+# m h  dom mon dow   command
+
+# Execute main process, check statuses, store readings, send alert. (At every 30th minute)
+*/30 * * * *   bin/console status-checker:execute
+
+# Remove obsolete readings, 30 latest readings will be retained, should be executed after status-checker:execute. (At every 30th minute)
+*/40 * * * *   bin/console status-checker:remove-readings --readings-count 30
+
+# Additional command for checking statuses. (At minute 35 past every 4th hour)
+35 */4 * * *   bin/console status-checker:execute
