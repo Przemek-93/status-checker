@@ -10,9 +10,11 @@ The system fetch the readings and stores them in a database, it has a number of 
 
 ### Preparing environment
 
-* Execute `cp .env .env.local`
+* Execute `cp .env.dist .env`
 
-* Execute `bin/console doctrine:database:create` to create database.
+* Execute `docker-compose build` and `docker-compose up` to build docker environment.
+
+* Execute `bin/console doctrine:database:create` to create database(Only for non-docker).
 
 * Execute `bin/console doctrine:migrations:migrate` to
   apply all changes to database (this command should be executed each time you pull some changes from branches to make
