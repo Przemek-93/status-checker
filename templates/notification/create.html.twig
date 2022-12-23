@@ -8,7 +8,7 @@
                 <div class="card bg-light mb-3 mt-5">
                     <div class="card-body">
                         {% if app.user %}
-                            <div class="card-header mb-3">Create status-check request</div>
+                            <h5 class="card-header mb-3 font-weight-bold">Create status-check request</h5>
                             {{ form_start(form) }}
                             <div class="form_group">
                                 <div class="col-md-12 mb-3">
@@ -37,11 +37,11 @@
                                     {{ form_errors(form) }}
                                     <div id="email-fields-list"
                                         data-prototype="{{ form_widget(form.receivers.vars.prototype)|e }}"
-                                        data-widget-tags="{{ '<div class="form-control col-md-4 mb-2"></div>'|e }}">
+                                        data-widget-tags="{{ '<div class="form-control col-md-6 mb-2"></div>'|e }}">
                                     </div>
                                     {% for emailField in form.receivers %}
                                         <div class="input-group  collection-widget mb-2">
-                                            <div class="form-control input-group col-md-4">
+                                            <div class="form-control input-group col-md-6">
                                                 {{ form_widget(emailField) }}
                                             </div>
                                             <button type="button" class="btn-outline-danger input-group-text remove-collection-widget">
