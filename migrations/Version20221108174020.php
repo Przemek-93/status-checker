@@ -17,7 +17,7 @@ final class Version20221108174020 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        $userTable = $schema->createTable('messenger_messages');
+        $userTable = $schema->createTable('messenger_email_sender');
 
         $userTable->addColumn(
             'id',
