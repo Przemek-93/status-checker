@@ -69,25 +69,4 @@ class Handler
 
         return $results;
     }
-
-    public function bulkChecking(array $notifications): array
-    {
-        foreach ($notifications as $notification) {
-            try {
-                $notification->addReading($this->checker->check($notification));
-            } catch (Throwable $throwable) {
-                $this->logger->error(
-                    sprintf(
-                        'Something went wrong while checking status, request id: %d, error: %s',
-                        $notification->getId(),
-                        $throwable->getMessage()
-                    )
-                );
-            }
-        }
-
-        $this->entityManager->flush();
-
-        return $notifications;
-    }
 }

@@ -20,7 +20,7 @@ class NotificationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('url', UrlType::class, ['attr' => ['placeholder' => 'e.g. https://syngeos.api.pl/']])
+            ->add('url', UrlType::class, ['attr' => ['placeholder' => 'e.g. https://api.syngeos.pl']])
             ->add('type', ChoiceType::class, [
                 'choices' => ['Email' => Notification::NOTIFICATION_EMAIL_TYPE]
             ])
