@@ -7,7 +7,7 @@ namespace App\Service\StatusChecker\Sender;
 use App\Entity\Notification;
 use App\Entity\NotificationReading;
 use Exception;
-use DateTimeImmutable;
+use DateTime;
 
 class SendData
 {
@@ -31,7 +31,7 @@ class SendData
         return $this->reading->getStatus();
     }
 
-    public function getReadAt(): DateTimeImmutable
+    public function getReadAt(): DateTime
     {
         return $this->reading->getReadAt();
     }

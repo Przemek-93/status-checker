@@ -19,7 +19,7 @@ class Checker
     public function check(Notification $notification): NotificationReading
     {
         $response = $this->httpClient->request(
-            $notification->getHttpMethod(),
+            $notification->getHttpMethod()->value,
             $notification->getUrl()
         );
 

@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 {% block body %}
     <div class="container">
-        <div class="row">
+        <div class="row justify-content-center">
             <div class="col-md-12">
-                <div class="card bg-light mb-3 mt-3">
+                <div class="card bg-light mb-3 mt-5">
                     <div class="card-body">
                         {% if app.user %}
                         {% if notifications|length > 0 %}
-                            <div class="card-header table-responsive">List of all status-check requests</div>
+                            <h5 class="card-header table-responsive font-weight-bold">List of all status-check requests</h5>
                                 <table class="table text-center table-striped" style="table-layout: fixed;">
                                     <thead>
                                         <tr>
@@ -30,7 +30,7 @@
                                             <tr>
                                                 <th scope="row" class="align-middle">{{ key + 1 }}</th>
                                                 <td class="align-middle">{{ item.url }}</td>
-                                                <td class="align-middle">{{ item.type }}</td>
+                                                <td class="align-middle">{{ item.type.value }}</td>
                                                 <td class="align-middle">every {{ item.sendingFrequency }} hour/s</td>
                                                 <td class="align-middle">{{ receivers }}</td>
                                                 <td class="align-middle">{{ item.createdAt | date('Y-m-d H:i:s') }}</td>
@@ -56,7 +56,7 @@
                                 <br>
                                 <br>
                                 <a href="{{ path('app_notification_create') }}" class="btn btn-info">
-                                     Add first status-check request >>
+                                     Add first status-check request <i class="bi bi-arrow-right-square"></i>
                                 </a>
                             </div>
                         {% endif %}

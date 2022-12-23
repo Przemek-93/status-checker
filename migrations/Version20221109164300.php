@@ -5,35 +5,173 @@ declare(strict_types=1);
 namespace DoctrineMigrations;
 
 use Doctrine\DBAL\Schema\Schema;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Migrations\AbstractMigration;
 
-/**
- * Auto-generated Migration: Please modify to your needs!
- */
 final class Version20221109164300 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add notification and related notification_reading, notification_receiver tables.';
     }
 
     public function up(Schema $schema): void
     {
-        // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE notification (id INT AUTO_INCREMENT NOT NULL, url VARCHAR(255) NOT NULL, type VARCHAR(255) NOT NULL, http_method VARCHAR(255) NOT NULL, sending_frequency INT NOT NULL, is_active TINYINT(1) NOT NULL, sending_date DATETIME DEFAULT NULL COMMENT \'(DC2Type:date_immutable)\', sent_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:date_immutable)\', created_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', updated_at DATETIME DEFAULT NULL COMMENT \'(DC2Type:datetime_immutable)\', PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_general_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE notification_reading (id INT AUTO_INCREMENT NOT NULL, notification_id INT NOT NULL, status INT NOT NULL, content JSON NOT NULL, read_at DATETIME NOT NULL COMMENT \'(DC2Type:datetime_immutable)\', INDEX IDX_D40476F6EF1A9D84 (notification_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_general_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE notification_receiver (id INT AUTO_INCREMENT NOT NULL, notification_id INT NOT NULL, email VARCHAR(255) NOT NULL, INDEX IDX_68A8B433EF1A9D84 (notification_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_general_ci` ENGINE = InnoDB');
-        $this->addSql('ALTER TABLE notification_reading ADD CONSTRAINT FK_D40476F6EF1A9D84 FOREIGN KEY (notification_id) REFERENCES notification (id)');
-        $this->addSql('ALTER TABLE notification_receiver ADD CONSTRAINT FK_68A8B433EF1A9D84 FOREIGN KEY (notification_id) REFERENCES notification (id)');
+        $notificationTable = $schema->createTable('notification');
+
+        $notificationTable->addColumn(
+            'id',
+            Types::INTEGER,
+            ['autoincrement' => true]
+        );
+
+        $notificationTable->setPrimaryKey(['id']);
+
+        $notificationTable->addColumn(
+            'url',
+            Types::STRING,
+            ['length' => 255]
+        );
+
+        $notificationTable->addColumn(
+            'type',
+            Types::STRING,
+            ['length' => 10]
+        );
+
+        $notificationTable->addColumn(
+            'http_method',
+            Types::STRING,
+            ['length' => 10]
+        );
+
+        $notificationTable->addColumn(
+            'sending_frequency',
+            Types::INTEGER
+        );
+
+        $notificationTable->addColumn(
+            'is_active',
+            Types::BOOLEAN,
+            ['default' => false]
+        );
+
+        $notificationTable->addColumn(
+            'sending_date',
+            Types::DATETIME_MUTABLE
+        );
+
+        $notificationTable->addColumn(
+            'sent_at',
+            Types::DATETIME_MUTABLE,
+            ['notnull' => false]
+        );
+
+        $notificationTable->addColumn(
+            'created_at',
+            Types::DATETIME_MUTABLE,
+            ['default' => 'CURRENT_TIMESTAMP']
+        );
+
+        $notificationTable->addColumn(
+            'updated_at',
+            Types::DATETIME_MUTABLE,
+            ['default' => 'CURRENT_TIMESTAMP']
+        );
+
+        $receiverTable = $schema->createTable('notification_receiver');
+
+        $receiverTable->addColumn(
+            'id',
+            Types::INTEGER,
+            ['autoincrement' => true]
+        );
+
+        $receiverTable->setPrimaryKey(['id']);
+
+        $receiverTable->addColumn(
+            'notification_id',
+            Types::INTEGER
+        );
+
+        $receiverTable->addIndex(
+            ['notification_id'],
+            'IDX_68A8B433EF1A9D84'
+        );
+
+        $receiverTable->addColumn(
+            'email',
+            Types::STRING,
+            ['length' => 50]
+        );
+
+        $receiverTable->addUniqueIndex(
+            ['notification_id', 'email'],
+            'UNIQUE_IDX_68A8B433EF1A2D12'
+        );
+
+        $receiverTable->addForeignKeyConstraint(
+            $notificationTable,
+            ['notification_id'],
+            ['id'],
+            ['onDelete' => 'CASCADE'],
+            'FK_68A8B433EF1A9D84'
+        );
+
+        $readingTable = $schema->createTable('notification_reading');
+
+        $readingTable->addColumn(
+            'id',
+            Types::INTEGER,
+            ['autoincrement' => true]
+        );
+
+        $readingTable->setPrimaryKey(['id']);
+
+        $readingTable->addColumn(
+            'notification_id',
+            Types::INTEGER
+        );
+
+        $readingTable->addIndex(
+            ['notification_id'],
+            'IDX_D40476F6EF1A9D84'
+        );
+
+        $readingTable->addColumn(
+            'status',
+            Types::INTEGER
+        );
+
+        $readingTable->addColumn(
+            'content',
+            Types::JSON
+        );
+
+        $readingTable->addColumn(
+            'read_at',
+            Types::DATETIME_MUTABLE
+        );
+
+        $readingTable->addForeignKeyConstraint(
+            $notificationTable,
+            ['notification_id'],
+            ['id'],
+            ['onDelete' => 'CASCADE'],
+            'FK_D40476F6EF1A9D84'
+        );
     }
 
     public function down(Schema $schema): void
     {
-        // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE notification_reading DROP FOREIGN KEY FK_D40476F6EF1A9D84');
-        $this->addSql('ALTER TABLE notification_receiver DROP FOREIGN KEY FK_68A8B433EF1A9D84');
-        $this->addSql('DROP TABLE notification');
-        $this->addSql('DROP TABLE notification_reading');
-        $this->addSql('DROP TABLE notification_receiver');
+        $readingTable = $schema->getTable('notification_reading');
+        $readingTable->removeForeignKey('FK_D40476F6EF1A9D84');
+
+        $receiverTable = $schema->getTable('notification_receiver');
+        $receiverTable->removeForeignKey('FK_68A8B433EF1A9D84');
+
+        $schema->dropTable('notification');
+        $schema->dropTable('notification_reading');
+        $schema->dropTable('notification_receiver');
     }
 }

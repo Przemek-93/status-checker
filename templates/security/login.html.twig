@@ -2,67 +2,65 @@
 {% block title %}Log in!{% endblock %}
 {% block body %}
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 ml-md-auto">
-                <div class="">
-                    <div class="card bg-light mb-3 mt-5" style="width: 800px;">
-                        <div class="card-body">
-                            <form class="form-horizontal" role="form" method="post">
-                                {% if app.user %}
-                                    <div class="mb-3">
-                                        You are logged in as {{ app.user.name }},
-                                        <a href="{{ path('app_logout') }}">Logout</a>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card bg-light mb-3 mt-5">
+                    <div class="card-body">
+                        <form class="form-horizontal" role="form" method="post">
+                            {% if app.user %}
+                                <div class="mb-3">
+                                    You are logged in as {{ app.user.name }},
+                                    <a href="{{ path('app_logout') }}">Logout</a>
+                                </div>
+                            {% elseif not app.user %}
+                                <h5 class="card-header mb-3 font-weight-bold">Please sign in</h5>
+                                <div class="form-group">
+                                    <label for="email" class="col-md-4 control-label"
+                                    >E-Mail Address</label
+                                    >
+                                    <div class="col-md-12">
+                                        <input
+                                                id="inputEmail"
+                                                type="email"
+                                                class="form-control"
+                                                name="email"
+                                                value="{{ last_username }}"
+                                                required
+                                                autofocus
+                                        />
                                     </div>
-                                {% elseif not app.user %}
-                                    <div class="card-header mb-3">Please sign in</div>
-                                    <div class="form-group">
-                                        <label for="email" class="col-md-4 control-label"
-                                        >E-Mail Address</label
-                                        >
-                                        <div class="col-md-12">
-                                            <input
-                                                    id="inputEmail"
-                                                    type="email"
-                                                    class="form-control"
-                                                    name="email"
-                                                    value="{{ last_username }}"
-                                                    required
-                                                    autofocus
-                                            />
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password" class="col-md-4 control-label"
+                                    >Password</label
+                                    >
+                                    <div class="col-md-12">
+                                        <input
+                                                id="inputPassword"
+                                                type="password"
+                                                class="form-control"
+                                                name="password"
+                                                required
+                                        />
                                     </div>
-                                    <div class="form-group">
-                                        <label for="password" class="col-md-4 control-label"
-                                        >Password</label
-                                        >
-                                        <div class="col-md-12">
-                                            <input
-                                                    id="inputPassword"
-                                                    type="password"
-                                                    class="form-control"
-                                                    name="password"
-                                                    required
-                                            />
-                                        </div>
+                                </div>
+                                <input
+                                        type="hidden"
+                                        name="_csrf_token"
+                                        value="{{ csrf_token('authenticate') }}"
+                                />
+                                <div class="form-group">
+                                    <div class="col-md-12">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fa fa-btn fa-sign-in bi bi-door-open"></i> Login
+                                        </button>
+                                        <a href="{{ path('app_registration') }}" class="btn btn-secondary">
+                                            <i class="fa fa-btn fa-sign-in bi bi-pen"></i> Register
+                                        </a>
                                     </div>
-                                    <input
-                                            type="hidden"
-                                            name="_csrf_token"
-                                            value="{{ csrf_token('authenticate') }}"
-                                    />
-                                    <div class="form-group">
-                                        <div class="col-md-12">
-                                            <button type="submit" class="btn btn-primary">
-                                                <i class="fa fa-btn fa-sign-in bi bi-door-open"></i> Login
-                                            </button>
-                                            <a href="{{ path('app_registration') }}" class="btn btn-secondary">
-                                                <i class="fa fa-btn fa-sign-in bi bi-pen"></i> Register
-                                            </a>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </form>
-                        </div>
+                                </div>
+                            {% endif %}
+                        </form>
                     </div>
                 </div>
             </div>

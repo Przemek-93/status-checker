@@ -52,6 +52,7 @@ class CheckStatusesCommand extends Command
         }
 
         $this->entityManager->flush();
+        $symfonyStyle->newLine(2);
         $symfonyStyle->success('Process has been completed.');
 
         return Command::SUCCESS;

@@ -72,6 +72,7 @@ class RemoveRedundantReadingsCommand extends Command
         }
 
         $this->entityManager->flush();
+        $symfonyStyle->newLine(2);
         $symfonyStyle->success(sprintf(
                 'Process has been completed. [%d] readings has been removed.',
                 $removed

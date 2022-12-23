@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Enums\HttpMethod;
+use App\Entity\Enums\NotificationType;
 use App\Repository\NotificationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+use DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 use Exception;
 
@@ -16,10 +18,6 @@ use Exception;
 #[ORM\HasLifecycleCallbacks]
 class Notification
 {
-    public const NOTIFICATION_EMAIL_TYPE = 'EMAIL';
-    public const HTTP_METHODS = [ 'GET', 'POST'];
-    public const HTTP_FORM_METHODS = [ 'GET' => 'GET', 'POST' => 'POST'];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -57,19 +55,15 @@ class Notification
     #[Assert\Valid]
     private Collection $readings;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
-    #[Assert\Type(type: 'string')]
-    #[Assert\Choice(choices: [self::NOTIFICATION_EMAIL_TYPE])]
-    private ?string $type = null;
+    #[ORM\Column(length: 10, enumType: NotificationType::class)]
+    #[Assert\Type(type: NotificationType::class)]
+    #[Assert\Choice(choices: [NotificationType::EMAIL])]
+    private NotificationType $type;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
-    #[Assert\Type(type: 'string')]
-    #[Assert\Choice(choices: self::HTTP_METHODS)]
-    private ?string $httpMethod = null;
+    #[ORM\Column(length: 10, enumType: HttpMethod::class)]
+    #[Assert\Type(type: HttpMethod::class)]
+    #[Assert\Choice(choices: [HttpMethod::GET, HttpMethod::POST])]
+    private HttpMethod $httpMethod;
 
     #[ORM\Column]
     #[Assert\Positive]
@@ -82,20 +76,20 @@ class Notification
     private ?bool $isActive = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $sendingDate = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $sendingDate = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $sentAt = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $sentAt = null;
 
     #[ORM\Column]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $createdAt = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $updatedAt = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $updatedAt = null;
 
     public function __construct()
     {
@@ -174,26 +168,26 @@ class Notification
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): NotificationType
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(NotificationType $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function setHttpMethod(string $httpMethod): self
+    public function setHttpMethod(HttpMethod $httpMethod): self
     {
         $this->httpMethod = $httpMethod;
 
         return $this;
     }
 
-    public function getHttpMethod(): ?string
+    public function getHttpMethod(): HttpMethod
     {
         return $this->httpMethod;
     }
@@ -222,73 +216,53 @@ class Notification
         return $this;
     }
 
-    public function getSendingDate(): ?DateTimeImmutable
+    public function getSendingDate(): ?DateTime
     {
         return $this->sendingDate;
     }
 
     public function setSendingDate(): self
     {
-        $this->sendingDate = (new DateTimeImmutable())
+        $this->sendingDate = (new DateTime())
             ->modify('+ ' . $this->sendingFrequency . ' hours');
 
         return $this;
     }
 
-    public function getSentAt(): ?DateTimeImmutable
+    public function getSentAt(): ?DateTime
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(?DateTimeImmutable $sentAt): self
+    public function setSentAt(?DateTime $sentAt): self
     {
         $this->sentAt = $sentAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function setCreatedAt(DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    #[ORM\PrePersist]
-    public function setCreatedAt(): self
+    public function setUpdatedAt(DateTime $updatedAt): self
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function initSendingDate(): self
-    {
-        if (!$this->sendingFrequency) {
-            throw new Exception('Sending frequency has not been set.');
-        }
-
-        $this->sendingDate = (new DateTimeImmutable())
-            ->modify(
-                sprintf(
-                    '+ %d hours',
-                    $this->sendingFrequency
-                )
-            );
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAt(): self
-    {
-        $this->updatedAt = new DateTimeImmutable();
-
-        return $this;
     }
 
     public function getHasFailedReadings(): bool
@@ -303,5 +277,36 @@ class Notification
         }
 
         return $hasFailed;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = new DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function initSendingDate(): self
+    {
+        if (!$this->sendingFrequency) {
+            throw new Exception('Sending frequency has not been set.');
+        }
+
+        $this->sendingDate = (new DateTime())
+            ->modify(
+                sprintf(
+                    '+ %d hours',
+                    $this->sendingFrequency
+                )
+            );
+
+        return $this;
     }
 }

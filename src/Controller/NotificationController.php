@@ -8,6 +8,7 @@ use App\Entity\Notification;
 use App\Form\NotificationType;
 use App\Repository\NotificationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,11 +19,12 @@ class NotificationController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly NotificationRepository $notificationRepository
+        private readonly NotificationRepository $notificationRepository,
+        private readonly LoggerInterface $logger
     ) {
     }
 
-    #[Route('/notification', name: 'app_notification')]
+    #[Route(path: '/notification', name: 'app_notification')]
     public function index(): Response
     {
         return $this->render('notification/index.html.twig', [
@@ -30,16 +32,38 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    #[Route('/notification/remove/{id}', name: 'app_notification_remove')]
-    public function remove(Notification $notification): Response
+    #[Route(
+        path: '/notification/remove/{id}',
+        name: 'app_notification_remove',
+        requirements: ['id' => '\d+']
+    )]
+    public function remove(int $id): Response
     {
-        $this->entityManager->remove($notification);
-        $this->entityManager->flush();
+        try {
+            $notification = $this->notificationRepository->find(222);
+            $this->entityManager->remove($notification);
+            $this->entityManager->flush();
+        } catch (Throwable $throwable) {
+            $this->logger->error(
+                sprintf(
+                    'Error occurred while removing notification [id: %d, error: %s]',
+                    $id,
+                    $throwable->getMessage()
+                )
+            );
+            $this->addFlash(
+                'error',
+                'Something went wrong while trying to remove given check-request.'
+            );
+
+            return $this->redirectToRoute('app_notification');
+        }
+
 
         return $this->redirectToRoute('app_notification');
     }
 
-    #[Route('/notification/create', name: 'app_notification_create')]
+    #[Route(path: '/notification/create', name: 'app_notification_create')]
     public function create(Request $request): Response
     {
         $notification = new Notification();
@@ -50,9 +74,15 @@ class NotificationController extends AbstractController
                 $this->entityManager->persist($notification);
                 $this->entityManager->flush();
             } catch (Throwable $throwable) {
+                $this->logger->error(
+                    sprintf(
+                        'Error occurred while creating notification [error: %s]',
+                        $throwable->getMessage()
+                    )
+                );
                 $this->addFlash(
                     'error',
-                    'Something went wrong, error: ' . $throwable->getMessage()
+                    'Something went wrong while trying to create check-request.'
                 );
 
                 return $this->redirectToRoute('app_notification_create');
@@ -66,9 +96,14 @@ class NotificationController extends AbstractController
         ]);
     }
 
-    #[Route('/notification/edit/{id}', name: 'app_notification_edit')]
-    public function edit(Request $request, Notification $notification): Response
+    #[Route(
+        path: '/notification/edit/{id}',
+        name: 'app_notification_edit',
+        requirements: ['id' => '\d+']
+    )]
+    public function edit(Request $request, int $id): Response
     {
+        $notification = $this->notificationRepository->find($id);
         $form = $this->createForm(NotificationType::class, $notification);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -76,12 +111,22 @@ class NotificationController extends AbstractController
                 $this->entityManager->persist($notification);
                 $this->entityManager->flush();
             } catch (Throwable $throwable) {
+                $this->logger->error(
+                    sprintf(
+                        'Error occurred while editing notification [id: %d, error: %s]',
+                        $id,
+                        $throwable->getMessage()
+                    )
+                );
                 $this->addFlash(
                     'error',
-                    'Something went wrong, error: ' . $throwable->getMessage()
+                    'Something went wrong while trying to edit check-request.'
                 );
 
-                return $this->redirectToRoute('app_notification_edit');
+                return $this->redirectToRoute(
+                    'app_notification_edit',
+                    ['id' => $id]
+                );
             }
 
             return $this->redirectToRoute('app_notification');

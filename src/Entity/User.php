@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\Table(name: '`user`')]
+#[ORM\Table(name: 'user')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,14 +20,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Type(type: 'int')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     #[Assert\Email]
     #[Assert\NotBlank]
-    #[Assert\Length(max: 180)]
+    #[Assert\Length(max: 255)]
     #[Assert\Type(type: 'string')]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
     #[Assert\Type(type: 'string')]
@@ -38,9 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Type(type: 'array')]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'string')]
+    #[Assert\Length(max: 255)]
     private ?string $password = null;
 
     public function getId(): ?int
