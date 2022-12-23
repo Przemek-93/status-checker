@@ -55,10 +55,10 @@ class RegistrationController extends AbstractController
                     'Something went wrong while trying to register new user.'
                 );
 
-                return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('app_registration');
             }
 
-            return $this->redirectToRoute('app_registration');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/index.html.twig', [

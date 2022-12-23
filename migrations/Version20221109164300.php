@@ -36,13 +36,13 @@ final class Version20221109164300 extends AbstractMigration
         $notificationTable->addColumn(
             'type',
             Types::STRING,
-            ['length' => 255]
+            ['length' => 10]
         );
 
         $notificationTable->addColumn(
             'http_method',
             Types::STRING,
-            ['length' => 255]
+            ['length' => 10]
         );
 
         $notificationTable->addColumn(
@@ -102,7 +102,12 @@ final class Version20221109164300 extends AbstractMigration
         $receiverTable->addColumn(
             'email',
             Types::STRING,
-            ['length' => 255]
+            ['length' => 50]
+        );
+
+        $receiverTable->addUniqueIndex(
+            ['notification_id', 'email'],
+            'UNIQUE_IDX_68A8B433EF1A2D12'
         );
 
         $receiverTable->addForeignKeyConstraint(

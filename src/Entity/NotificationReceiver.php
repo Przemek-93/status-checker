@@ -6,9 +6,14 @@ namespace App\Entity;
 
 use App\Repository\NotificationReceiverRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NotificationReceiverRepository::class)]
+#[UniqueEntity(
+    fields: ['notification', 'email'],
+    message: 'Email must be unique.')
+]
 class NotificationReceiver
 {
     #[ORM\Id]
@@ -17,10 +22,10 @@ class NotificationReceiver
     #[Assert\Type(type: 'int')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     #[Assert\Email]
     #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
+    #[Assert\Length(max: 50)]
     #[Assert\Type(type: 'string')]
     private ?string $email = null;
 

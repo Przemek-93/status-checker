@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Enums\HttpMethod;
+use App\Entity\Enums\NotificationType;
 use App\Repository\NotificationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,10 +18,6 @@ use Exception;
 #[ORM\HasLifecycleCallbacks]
 class Notification
 {
-    public const NOTIFICATION_EMAIL_TYPE = 'EMAIL';
-    public const HTTP_METHODS = [ 'GET', 'POST'];
-    public const HTTP_FORM_METHODS = [ 'GET' => 'GET', 'POST' => 'POST'];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -57,19 +55,15 @@ class Notification
     #[Assert\Valid]
     private Collection $readings;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
-    #[Assert\Type(type: 'string')]
-    #[Assert\Choice(choices: [self::NOTIFICATION_EMAIL_TYPE])]
-    private ?string $type = null;
+    #[ORM\Column(length: 10, enumType: NotificationType::class)]
+    #[Assert\Type(type: NotificationType::class)]
+    #[Assert\Choice(choices: [NotificationType::EMAIL])]
+    private NotificationType $type;
 
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 255)]
-    #[Assert\Type(type: 'string')]
-    #[Assert\Choice(choices: self::HTTP_METHODS)]
-    private ?string $httpMethod = null;
+    #[ORM\Column(length: 10, enumType: HttpMethod::class)]
+    #[Assert\Type(type: HttpMethod::class)]
+    #[Assert\Choice(choices: [HttpMethod::GET, HttpMethod::POST])]
+    private HttpMethod $httpMethod;
 
     #[ORM\Column]
     #[Assert\Positive]
@@ -174,26 +168,26 @@ class Notification
         return $this;
     }
 
-    public function getType(): ?string
+    public function getType(): NotificationType
     {
         return $this->type;
     }
 
-    public function setType(string $type): self
+    public function setType(NotificationType $type): self
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function setHttpMethod(string $httpMethod): self
+    public function setHttpMethod(HttpMethod $httpMethod): self
     {
         $this->httpMethod = $httpMethod;
 
         return $this;
     }
 
-    public function getHttpMethod(): ?string
+    public function getHttpMethod(): HttpMethod
     {
         return $this->httpMethod;
     }

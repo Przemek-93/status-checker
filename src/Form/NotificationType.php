@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Enums\HttpMethod;
 use App\Entity\Notification;
+use App\Entity\Enums\NotificationType as TypeEnum;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,12 +24,8 @@ class NotificationType extends AbstractType
     {
         $builder
             ->add('url', UrlType::class, ['attr' => ['placeholder' => 'e.g. https://api.syngeos.pl']])
-            ->add('type', ChoiceType::class, [
-                'choices' => ['Email' => Notification::NOTIFICATION_EMAIL_TYPE]
-            ])
-            ->add('httpMethod', ChoiceType::class, [
-                'choices' => Notification::HTTP_FORM_METHODS
-            ])
+            ->add('type', EnumType::class, ['class' => TypeEnum::class])
+            ->add('httpMethod', EnumType::class, ['class' => HttpMethod::class])
             ->add('sendingFrequency', IntegerType::class, [
                 'attr' => ['placeholder' => 'Every how many hours to check? e.g. 10']
             ])

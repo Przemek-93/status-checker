@@ -38,9 +38,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Type(type: 'array')]
     private array $roles = [];
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'string')]
+    #[Assert\Length(max: 255)]
     private ?string $password = null;
 
     public function getId(): ?int
