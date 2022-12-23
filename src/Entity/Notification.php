@@ -8,7 +8,7 @@ use App\Repository\NotificationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+use DateTime;
 use Symfony\Component\Validator\Constraints as Assert;
 use Exception;
 
@@ -82,20 +82,20 @@ class Notification
     private ?bool $isActive = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $sendingDate = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $sendingDate = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $sentAt = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $sentAt = null;
 
     #[ORM\Column]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $createdAt = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $createdAt = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private ?DateTimeImmutable $updatedAt = null;
+    #[Assert\Type(type: DateTime::class)]
+    private ?DateTime $updatedAt = null;
 
     public function __construct()
     {
@@ -222,73 +222,53 @@ class Notification
         return $this;
     }
 
-    public function getSendingDate(): ?DateTimeImmutable
+    public function getSendingDate(): ?DateTime
     {
         return $this->sendingDate;
     }
 
     public function setSendingDate(): self
     {
-        $this->sendingDate = (new DateTimeImmutable())
+        $this->sendingDate = (new DateTime())
             ->modify('+ ' . $this->sendingFrequency . ' hours');
 
         return $this;
     }
 
-    public function getSentAt(): ?DateTimeImmutable
+    public function getSentAt(): ?DateTime
     {
         return $this->sentAt;
     }
 
-    public function setSentAt(?DateTimeImmutable $sentAt): self
+    public function setSentAt(?DateTime $sentAt): self
     {
         $this->sentAt = $sentAt;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?DateTimeImmutable
+    public function setCreatedAt(DateTime $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?DateTime
     {
         return $this->createdAt;
     }
 
-    #[ORM\PrePersist]
-    public function setCreatedAt(): self
+    public function setUpdatedAt(DateTime $updatedAt): self
     {
-        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = $updatedAt;
 
         return $this;
     }
 
-    #[ORM\PrePersist]
-    public function initSendingDate(): self
-    {
-        if (!$this->sendingFrequency) {
-            throw new Exception('Sending frequency has not been set.');
-        }
-
-        $this->sendingDate = (new DateTimeImmutable())
-            ->modify(
-                sprintf(
-                    '+ %d hours',
-                    $this->sendingFrequency
-                )
-            );
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
-    }
-
-    #[ORM\PreUpdate]
-    public function setUpdatedAt(): self
-    {
-        $this->updatedAt = new DateTimeImmutable();
-
-        return $this;
     }
 
     public function getHasFailedReadings(): bool
@@ -303,5 +283,36 @@ class Notification
         }
 
         return $hasFailed;
+    }
+
+    #[ORM\PrePersist]
+    public function prePersist(): void
+    {
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function preUpdate(): void
+    {
+        $this->updatedAt = new DateTime();
+    }
+
+    #[ORM\PrePersist]
+    public function initSendingDate(): self
+    {
+        if (!$this->sendingFrequency) {
+            throw new Exception('Sending frequency has not been set.');
+        }
+
+        $this->sendingDate = (new DateTime())
+            ->modify(
+                sprintf(
+                    '+ %d hours',
+                    $this->sendingFrequency
+                )
+            );
+
+        return $this;
     }
 }

@@ -6,7 +6,7 @@ namespace App\Entity;
 
 use App\Repository\ReadingRepository;
 use Doctrine\ORM\Mapping as ORM;
-use DateTimeImmutable;
+use DateTime;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Exception;
@@ -40,8 +40,8 @@ class NotificationReading
 
     #[ORM\Column]
     #[Assert\NotNull]
-    #[Assert\Type(type: DateTimeImmutable::class)]
-    private DateTimeImmutable $readAt;
+    #[Assert\Type(type: DateTime::class)]
+    private DateTime $readAt;
 
     #[ORM\ManyToOne(inversedBy: 'readings')]
     #[ORM\JoinColumn(nullable: false)]
@@ -49,7 +49,7 @@ class NotificationReading
 
     public function __construct(
         int $status,
-        DateTimeImmutable $readAt,
+        DateTime $readAt,
         array $content = [],
     ) {
         $this->status = $status;
@@ -72,7 +72,7 @@ class NotificationReading
         return $this->content;
     }
 
-    public function getReadAt(): ?DateTimeImmutable
+    public function getReadAt(): ?DateTime
     {
         return $this->readAt;
     }

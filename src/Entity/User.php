@@ -20,14 +20,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Type(type: 'int')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 255, unique: true)]
     #[Assert\Email]
     #[Assert\NotBlank]
-    #[Assert\Length(max: 180)]
+    #[Assert\Length(max: 255)]
     #[Assert\Type(type: 'string')]
     private ?string $email = null;
 
-    #[ORM\Column(type: 'string', length: 255, unique: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(max: 255)]
     #[Assert\Type(type: 'string')]

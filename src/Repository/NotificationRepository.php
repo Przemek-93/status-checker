@@ -7,7 +7,7 @@ namespace App\Repository;
 use App\Entity\Notification;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DateTimeImmutable;
+use DateTime;
 
 class NotificationRepository extends ServiceEntityRepository
 {
@@ -26,7 +26,7 @@ class NotificationRepository extends ServiceEntityRepository
             ->setParameters(
                 [
                     'isActive' => true,
-                    'now' => new DateTimeImmutable()
+                    'now' => new DateTime()
                 ]
             )
             ->getQuery()

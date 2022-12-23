@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\StatusChecker\Checker;
 
 use App\Entity\NotificationReading;
-use DateTimeImmutable;
+use DateTime;
 
 class ResponseToReadingTransformer
 {
@@ -13,7 +13,7 @@ class ResponseToReadingTransformer
     {
         return new NotificationReading(
             $response->getStatusCode(),
-            new DateTimeImmutable(),
+            new DateTime(),
             $response->toArray()
         );
     }
