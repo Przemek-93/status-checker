@@ -3,8 +3,8 @@
 
 {% block body %}
     <div class="container">
-        <div class="row">
-            <div class="col-md-10 ml-md-auto">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
                 <div class="card bg-light mb-3 mt-5">
                     <div class="card-body">
                         {% if app.user %}
@@ -34,6 +34,7 @@
                             <div class="form_group">
                                 <div class="col-md-12 mb-3">
                                     <div class="mb-2">Receivers</div>
+                                    {{ form_errors(form) }}
                                     <div id="email-fields-list"
                                         data-prototype="{{ form_widget(form.receivers.vars.prototype)|e }}"
                                         data-widget-tags="{{ '<div class="form-control col-md-4 mb-2"></div>'|e }}">
