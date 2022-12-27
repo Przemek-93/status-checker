@@ -5,5 +5,4 @@ framework:
             email_sender:
                 dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
         routing:
-            # uncomment tu use sending email via messenger
-            # Symfony\Component\Mailer\Messenger\SendEmailMessage: email_sender
+            Symfony\Component\Mailer\Messenger\SendEmailMessage: email_sender

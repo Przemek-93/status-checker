@@ -40,3 +40,11 @@ The text file with the cron configuration can be found [here](./cron.txt)
   run `docker-compose exec php bin/console status-checker:execute` - command will first run a checking and check all active requests, 
   then will save the readings to the database and finally will send a notification to the saved notification-email addresses if something is wrong
     - this command should be executed twice per hour
+
+
+* all emails sent from the platform are handled by symfony messenger (saved in messenger table queue)
+  run `docker-compose exec php bin/console messenger:consume email_sender --time-limit 60 --limit 10` - command will automatically exit once it has processed `10` messages (limit),
+  or been running for `60s` (time limit)
+    - `--time-limit` - running-time of command, passed in seconds
+    - `--limit` - number of processed messages after which the command stops
+    - this command should be executed 5 times per hour

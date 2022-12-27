@@ -27,7 +27,7 @@ services:
     depends_on:
       - db
   db:
-    image: mysql:${DOCKER_MYSQL_VERSION}
+    image: "mysql:${DOCKER_MYSQL_VERSION}"
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
