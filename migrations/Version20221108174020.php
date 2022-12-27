@@ -12,7 +12,7 @@ final class Version20221108174020 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Add messenger_messages tables.';
+        return 'Add messenger_email_sender table.';
     }
 
     public function up(Schema $schema): void
@@ -65,7 +65,8 @@ final class Version20221108174020 extends AbstractMigration
 
         $userTable->addColumn(
             'delivered_at',
-            Types::DATETIME_MUTABLE
+            Types::DATETIME_MUTABLE,
+            ['default' => null, 'notNull' => false]
         );
 
         $userTable->addIndex(

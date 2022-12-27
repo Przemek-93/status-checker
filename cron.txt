@@ -3,8 +3,11 @@
 # Execute main process, check statuses, store readings, send alert. (At every 30th minute)
 */30 * * * *   bin/console status-checker:execute
 
-# Remove obsolete readings, 30 latest readings will be retained, should be executed after status-checker:execute. (At every 30th minute)
-*/40 * * * *   bin/console status-checker:remove-readings --readings-count 30
+# Remove obsolete readings, 30 latest readings will be retained, should be executed after status-checker:execute. (At every 35th minute)
+*/35 * * * *   bin/console status-checker:remove-readings --readings-count 30
 
-# Additional command for checking statuses. (At minute 35 past every 4th hour)
-35 */4 * * *   bin/console status-checker:execute
+# Send queued alert messages. (At every 12th minute)
+*/12 * * * *   bin/console messenger:consume email_sender --time-limit 60 --limit 10
+
+# Additional command for checking statuses. (At minute 40 past every 4th hour)
+40 */4 * * *   bin/console status-checker:execute
