@@ -18,8 +18,16 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * The class has a coupling between objects value of 13. Consider reducing under 13.
+ */
 class NotificationType extends AbstractType
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Avoid unused parameters such as '$options'.
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -36,8 +44,7 @@ class NotificationType extends AbstractType
                     'prototype' => true,
                     'required' => true,
                     'label' => false
-                ]
-            )
+                ])
             ->add('isActive', ChoiceType::class, [
                 'choices' => [
                     'True' => true,
@@ -46,7 +53,7 @@ class NotificationType extends AbstractType
             ])
             ->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
                 $notification = $event->getData();
-                foreach($notification->getReceivers() as $receiver) {
+                foreach ($notification->getReceivers() as $receiver) {
                     $receiver->setNotification($notification);
                 }
             });

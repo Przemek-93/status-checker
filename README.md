@@ -55,8 +55,8 @@ The text file with the cron configuration can be found [here](./cron.txt)
 ### Testing application
 
 * [`PHP_CodeSniffer`](https://github.com/squizlabs/PHP_CodeSniffer)\
-  execute: `docker-compose exec php vendor/bin/phpcs` to show violations\
-  execute: `docker-compose exec php vendor/bin/phpcbf` to automatically fix violations\
+  execute: `docker-compose exec php vendor/bin/phpcs -p` to show violations\
+  execute: `docker-compose exec php vendor/bin/phpcbf -p` to automatically fix violations\
   config: [`phpcs.xml`](./phpcs.xml.dist)
 
 

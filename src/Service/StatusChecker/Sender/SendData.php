@@ -21,17 +21,17 @@ class SendData
         }
     }
 
-    public function getNotificationUrl(): string
+    public function getNotificationUrl(): ?string
     {
         return $this->notification->getUrl();
     }
 
-    public function getReadingStatus(): int
+    public function getReadingStatus(): ?int
     {
         return $this->reading->getStatus();
     }
 
-    public function getReadAt(): DateTime
+    public function getReadAt(): ?DateTime
     {
         return $this->reading->getReadAt();
     }

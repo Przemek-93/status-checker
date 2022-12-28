@@ -15,6 +15,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Avoid unused parameters such as '$options'.
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

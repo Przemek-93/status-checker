@@ -12,9 +12,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class NotificationReceiverType extends AbstractType
 {
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Avoid unused parameters such as '$options'.
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder->add('email',EmailType::class, [
+        $builder->add('email', EmailType::class, [
             'required' => true,
             'label' => false,
             'attr' => ['placeholder' => 'e.g. test@syngeos.pl']
