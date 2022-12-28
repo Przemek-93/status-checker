@@ -13,27 +13,31 @@
         class="navbar navbar-expand-lg navbar-light bg-light"
 >
     <a href={{ path('app_status') }}>
-        <img src="https://syngeos.pl/wp-content/themes/syngeos/assets/images/logo-syngeos.png" alt="logo syngeos" class="mr-3">
+        <img src="https://syngeos.pl/wp-content/themes/syngeos/assets/images/logo-syngeos.png" alt="logo syngeos"
+             class="mr-3">
     </a>
-    <a class="navbar-brand nav-link" style="color:rgba(0,0,0,.7)" href="{{ path('app_status') }}"><i class="bi bi-graph-up-arrow"></i> <b>Status Checker</b></a>
+    <a class="navbar-brand nav-link" style="color:rgba(0,0,0,.7)" href="{{ path('app_status') }}"><i
+                class="bi bi-graph-up-arrow"></i> <b>Status Checker</b></a>
     <div class="collapse navbar-collapse" id="navbarSupportedContent"></div>
     <ul class="nav navbar-nav navbar-right font-weight-bold">
         <li><a class="nav-link" href="{{ path('app_status') }}"><i class="bi bi-bar-chart-line"></i> Status
             </a></li>
         {% if app.user %}
-            <li><a class="nav-link" href="{{ path('app_notification') }}"><i class="bi bi-card-checklist"></i> All requests
+            <li><a class="nav-link" href="{{ path('app_notification') }}"><i class="bi bi-card-checklist"></i> All
+                    requests
                 </a></li>
-            <li><a class="nav-link" href="{{ path('app_notification_create') }}"><i class="bi bi-plus-circle"></i> Create new request
+            <li><a class="nav-link" href="{{ path('app_notification_create') }}"><i class="bi bi-plus-circle"></i>
+                    Create new request
                 </a></li>
             <li><a class="nav-link" href="{{ path('app_logout') }}"><i class="bi bi-door-open-fill"></i> Logout
                 </a></li>
         {% elseif not app.user %}
             <li><a class="nav-link" href="{{ path('app_login') }}"><i class="bi bi-door-open"></i> Login
                 </a></li>
-            <li>
-                <a class="nav-link" href="{{ path('app_registration') }}"><i class="bi bi-pen"></i> Register
-                </a>
-            </li>
+            {% if user_registration_enabled == 1 %}
+                <li><a class="nav-link" href="{{ path('app_registration') }}"><i class="bi bi-pen"></i> Register
+                    </a></li>
+            {% endif %}
         {% endif %}
     </ul>
 </nav>
