@@ -12,8 +12,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: NotificationReceiverRepository::class)]
 #[UniqueEntity(
     fields: ['notification', 'email'],
-    message: 'Email must be unique.')
-]
+    message: 'Email must be unique.'
+)]
 class NotificationReceiver
 {
     #[ORM\Id]

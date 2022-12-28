@@ -17,3 +17,8 @@
 ###> jetbrains/ide ###
 /.idea
 ###< jetbrains/ide ###
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###

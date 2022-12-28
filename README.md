@@ -1,10 +1,12 @@
 # Syngeos Status-Checker application
 
-Technologies: `PHP 8.1`, `Symfony 6.1`
+Technologies: 
+[`PHP 8.1`](https://www.php.net/releases/8.1/en.php),
+[`Symfony 6.1`](https://symfony.com/doc/6.1/index.html)
 
 Syngeos application monitoring system, its function is to periodically check the system (based on added by user checking-requests)
-and inform users if something is not working as it should.
-The system has a dashboard for adding/editing requests for registered users and a status page for everyone.
+and inform users if something is not working as it should.\
+The system has a dashboard for adding/editing requests for registered users and a status page for everyone.\
 The system fetch the readings and stores them in a database, it has a number of commands that should be run at hourly intervals.
 
 
@@ -48,3 +50,26 @@ The text file with the cron configuration can be found [here](./cron.txt)
     - `--time-limit` - running-time of command, passed in seconds
     - `--limit` - number of processed messages after which the command stops
     - this command should be executed 5 times per hour
+
+
+### Testing application
+
+* [`PHP_CodeSniffer`](https://github.com/squizlabs/PHP_CodeSniffer)\
+  execute: `docker-compose exec php vendor/bin/phpcs -p` to show violations\
+  execute: `docker-compose exec php vendor/bin/phpcbf -p` to automatically fix violations\
+  config: [`phpcs.xml`](./phpcs.xml.dist)
+
+
+* [`Psalm`](https://psalm.dev/) \
+  execute: `docker-compose exec php vendor/bin/psalm`\
+  config: [`psalm.xml`](./psalm.xml)
+
+
+* [`PHPMD`](https://phpmd.org/)\
+  execute: `docker-compose exec php vendor/bin/phpmd src,public,tests text phpmd.xml`\
+  config: [`phpmd.xml`](./phpmd.xml)
+
+
+* [`PHPUnit`](https://phpunit.de/)\
+  execute: `docker-compose exec php vendor/bin/phpunit`\
+  config: [`phpunit.xml`](./phpunit.xml.dist)

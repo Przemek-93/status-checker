@@ -41,8 +41,8 @@ class Notification
     #[Assert\Valid]
     #[Assert\Count(
         min: 1,
-        minMessage: 'You must specify at least one email')
-    ]
+        minMessage: 'You must specify at least one email'
+    )]
     private Collection $receivers;
 
     #[ORM\OneToMany(

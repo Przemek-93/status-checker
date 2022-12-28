@@ -89,7 +89,7 @@ class NotificationReading
         return $this;
     }
 
-    public function getNotificationId(): int
+    public function getNotificationId(): ?int
     {
         if ($this->notification) {
             return $this->notification->getId();
