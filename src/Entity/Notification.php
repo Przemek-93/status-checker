@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Enums\HttpMethod;
+use App\Entity\Enums\NotificationReadingsState;
 use App\Entity\Enums\NotificationType;
 use App\Repository\NotificationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -265,18 +266,25 @@ class Notification
         return $this->updatedAt;
     }
 
-    public function getHasFailedReadings(): bool
+    public function getReadingsState(): NotificationReadingsState
     {
-        $hasFailed = false;
+        $state = NotificationReadingsState::OPERATIONAL;
         if ($this->readings->count()) {
-            $this->readings->map(function (NotificationReading $reading) use (&$hasFailed): void {
+            $this->readings->map(function (NotificationReading $reading) use (&$state): void {
                 if ($reading->isFailed()) {
-                    $hasFailed = true;
+                    $state = NotificationReadingsState::ERROR;
                 }
             });
+
+            if (
+                $state === NotificationReadingsState::ERROR &&
+                !$this->readings->first()->isFailed()
+            ) {
+                $state = NotificationReadingsState::WARNING;
+            }
         }
 
-        return $hasFailed;
+        return $state;
     }
 
     #[ORM\PrePersist]
