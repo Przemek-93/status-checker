@@ -40,7 +40,7 @@ class NotificationController extends AbstractController
     public function remove(int $id): Response
     {
         try {
-            $notification = $this->notificationRepository->find(222);
+            $notification = $this->notificationRepository->find($id);
             $this->entityManager->remove($notification);
             $this->entityManager->flush();
         } catch (Throwable $throwable) {

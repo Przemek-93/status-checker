@@ -12,7 +12,7 @@ class ResponseToReadingTransformer
     public function transform(Response $response): NotificationReading
     {
         return new NotificationReading(
-            $response->getStatusCode(),
+            $response->status,
             new DateTime(),
             $response->toArray()
         );

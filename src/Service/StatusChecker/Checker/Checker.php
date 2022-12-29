@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\StatusChecker\Checker;
 
+use App\Entity\Enums\HttpResponseStatus;
 use App\Entity\Notification;
 use App\Entity\NotificationReading;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -16,6 +17,10 @@ class Checker
     ) {
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.StaticAccess)
+     * Avoid using static access to class '\App\Entity\Enums\HttpResponseStatus' in method 'check'
+     */
     public function check(Notification $notification): NotificationReading
     {
         $response = $this->httpClient->request(
@@ -30,7 +35,7 @@ class Checker
 
         return $this->transformer->transform(
             new Response(
-                $response->getStatusCode(),
+                HttpResponseStatus::from($response->getStatusCode()),
                 json_decode($content, true) ?? [trim($content)]
             )
         );
