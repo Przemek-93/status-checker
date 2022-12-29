@@ -69,7 +69,7 @@
                                             <div class="row">
                                                 <div class="col-11" id="reading-content-{{ reading.id }}"
                                                      style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">
-                                                    {{ reading.content | json_encode(constant('JSON_PRETTY_PRINT')) }}
+                                                    {{ reading.body | json_encode(constant('JSON_PRETTY_PRINT')) }}
                                                 </div>
                                                 <div class="col-1">
                                                     <i class="bi bi-chevron-expand reading-expand-content"

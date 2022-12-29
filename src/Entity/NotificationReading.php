@@ -36,7 +36,7 @@ class NotificationReading
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'array')]
-    private array $content;
+    private array $body;
 
     #[ORM\Column]
     #[Assert\NotNull]
@@ -50,11 +50,11 @@ class NotificationReading
     public function __construct(
         int $status,
         DateTime $readAt,
-        array $content = [],
+        array $body = [],
     ) {
         $this->status = $status;
         $this->readAt = $readAt;
-        $this->content = $content;
+        $this->body = $body;
     }
 
     public function getId(): ?int
@@ -67,9 +67,9 @@ class NotificationReading
         return $this->status;
     }
 
-    public function getContent(): array
+    public function getBody(): array
     {
-        return $this->content;
+        return $this->body;
     }
 
     public function getReadAt(): ?DateTime
