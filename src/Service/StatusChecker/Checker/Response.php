@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace App\Service\StatusChecker\Checker;
 
+use App\Entity\Enums\HttpResponseStatus;
+
 class Response
 {
     public function __construct(
-        private readonly int $status,
-        private readonly array $content
+        public readonly HttpResponseStatus $status,
+        public readonly array $content
     ) {
-    }
-
-    public function getStatusCode(): int
-    {
-        return $this->status;
     }
 
     public function toArray(): array

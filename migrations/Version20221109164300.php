@@ -144,7 +144,7 @@ final class Version20221109164300 extends AbstractMigration
         );
 
         $readingTable->addColumn(
-            'content',
+            'body',
             Types::JSON
         );
 

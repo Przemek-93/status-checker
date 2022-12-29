@@ -4,39 +4,30 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Enums\HttpResponseStatus;
 use App\Repository\ReadingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Exception;
 
 #[ORM\Entity(repositoryClass: ReadingRepository::class)]
 class NotificationReading
 {
-    public const READING_STATUSES_OK = [
-        Response::HTTP_OK,
-        Response::HTTP_CREATED,
-        Response::HTTP_ACCEPTED,
-        Response::HTTP_NO_CONTENT,
-    ];
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Assert\Type(type: 'int')]
     private ?int $id = null;
 
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    #[Assert\PositiveOrZero]
-    #[Assert\Type(type: 'int')]
-    private int $status;
+    #[ORM\Column(enumType: HttpResponseStatus::class)]
+    #[Assert\Type(type: HttpResponseStatus::class)]
+    private HttpResponseStatus $status;
 
     #[ORM\Column]
     #[Assert\NotBlank]
     #[Assert\Type(type: 'array')]
-    private array $content;
+    private array $body;
 
     #[ORM\Column]
     #[Assert\NotNull]
@@ -48,13 +39,13 @@ class NotificationReading
     private ?Notification $notification = null;
 
     public function __construct(
-        int $status,
+        HttpResponseStatus $status,
         DateTime $readAt,
-        array $content = [],
+        array $body = [],
     ) {
         $this->status = $status;
         $this->readAt = $readAt;
-        $this->content = $content;
+        $this->body = $body;
     }
 
     public function getId(): ?int
@@ -64,12 +55,12 @@ class NotificationReading
 
     public function getStatus(): ?int
     {
-        return $this->status;
+        return $this->status->value;
     }
 
-    public function getContent(): array
+    public function getBody(): array
     {
-        return $this->content;
+        return $this->body;
     }
 
     public function getReadAt(): ?DateTime
@@ -100,14 +91,6 @@ class NotificationReading
 
     public function isFailed(): bool
     {
-        if ($this->status) {
-            if (in_array($this->status, self::READING_STATUSES_OK)) {
-                return false;
-            }
-
-            return true;
-        }
-
-        throw new Exception('Missed status.');
+        return $this->status->isFailed();
     }
 }
