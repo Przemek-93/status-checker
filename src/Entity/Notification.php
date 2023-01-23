@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Entity\Enums\CheckingType;
 use App\Entity\Enums\HttpMethod;
 use App\Entity\Enums\NotificationReadingsState;
 use App\Entity\Enums\NotificationType;
@@ -59,7 +60,12 @@ class Notification
     #[ORM\Column(length: 10, enumType: NotificationType::class)]
     #[Assert\Type(type: NotificationType::class)]
     #[Assert\Choice(choices: [NotificationType::EMAIL])]
-    private NotificationType $type;
+    private NotificationType $notificationType;
+
+    #[ORM\Column(length: 10, enumType: CheckingType::class)]
+    #[Assert\Type(type: CheckingType::class)]
+    #[Assert\Choice(choices: [CheckingType::OVERALL, CheckingType::ACTUALITY])]
+    private CheckingType $checkingType;
 
     #[ORM\Column(length: 10, enumType: HttpMethod::class)]
     #[Assert\Type(type: HttpMethod::class)]
@@ -169,14 +175,26 @@ class Notification
         return $this;
     }
 
-    public function getType(): NotificationType
+    public function getNotificationType(): NotificationType
     {
-        return $this->type;
+        return $this->notificationType;
     }
 
-    public function setType(NotificationType $type): self
+    public function setNotificationType(NotificationType $notificationType): self
     {
-        $this->type = $type;
+        $this->notificationType = $notificationType;
+
+        return $this;
+    }
+
+    public function getCheckingType(): CheckingType
+    {
+        return $this->checkingType;
+    }
+
+    public function setCheckingType(CheckingType $checkingType): self
+    {
+        $this->checkingType = $checkingType;
 
         return $this;
     }

@@ -17,7 +17,12 @@
                             </div>
                             <div class="form_group">
                                 <div class="col-md-12 mb-3">
-                                    {{ form_row(form.type, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_row(form.notificationType, {'attr': {'class': 'form-control'}}) }}
+                                </div>
+                            </div>
+                            <div class="form_group">
+                                <div class="col-md-12 mb-3">
+                                    {{ form_row(form.checkingType, {'attr': {'class': 'form-control'}}) }}
                                 </div>
                             </div>
                             <div class="form_group">
@@ -91,7 +96,7 @@
 {% block javascripts %}
     <script>
         jQuery(document).ready(function () {
-            jQuery('.add-another-collection-widget').click(function (e) {
+            jQuery('.add-another-collection-widget').click(function () {
                 var list = jQuery(jQuery(this).attr('data-list-selector'));
                 var counter = list.data('widget-counter') || list.children().length;
                 var newWidget = list.attr('data-prototype');
@@ -104,7 +109,7 @@
                 var newElem = jQuery(list.attr('data-widget-tags')).html(newWidget);
                 newElem.appendTo(list);
             });
-            jQuery('.remove-collection-widget').click(function (e) {
+            jQuery('.remove-collection-widget').click(function () {
                 $(this).closest('.collection-widget')
                     .fadeOut()
                     .remove();

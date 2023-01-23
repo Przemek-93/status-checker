@@ -34,7 +34,13 @@ final class Version20221109164300 extends AbstractMigration
         );
 
         $notificationTable->addColumn(
-            'type',
+            'notification_type',
+            Types::STRING,
+            ['length' => 10]
+        );
+
+        $notificationTable->addColumn(
+            'checking_type',
             Types::STRING,
             ['length' => 10]
         );
