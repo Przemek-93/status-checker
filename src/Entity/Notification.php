@@ -240,10 +240,13 @@ class Notification
         return $this->sendingDate;
     }
 
-    public function setSendingDate(): self
+    public function setSendingDate(?DateTime $sendingDate = null): self
     {
         $this->sendingDate = (new DateTime())
             ->modify('+ ' . $this->sendingFrequency . ' hours');
+        if ($sendingDate) {
+            $this->sendingDate = $sendingDate;
+        }
 
         return $this;
     }

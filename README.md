@@ -14,16 +14,26 @@ The system fetch the readings and stores them in a database, it has a number of 
 
 * Execute `cp .env.dist .env` to get local copy of .env file and adjust the environment.
 
+
 * Execute `docker-compose build` and then `docker-compose up` to build and run docker environment.
 
+
 * Execute `bin/console doctrine:database:create` to create database (only for non-docker).
+
 
 * Execute `docker-compose exec php bin/console doctrine:migrations:migrate` to
   apply all changes to database (this command should be executed each time you pull some changes from branches to make
   sure that you have current version of database scheme).
 
+
+* Execute `docker-compose exec php bin/console hautelook:fixtures:load` to load fixtures into database.\
+  Default user: email `status-checker@syngeos.pl`, password `SyngeosAdmin#`.\
+  Fixtures contains also defined default notifications, all data are available [here](./fixtures)
+
+
 * Make sure if `user registration` is enabled otherwise, it will not be possible to register a new user.\
   Registration can be triggered by [env](./.env) variable `USER_REGISTRATION_ENABLED` which is enabled by default.
+
 
 ### Application commands
 

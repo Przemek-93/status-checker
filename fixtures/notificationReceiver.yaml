@@ -1,0 +1,7 @@
+App\Entity\NotificationReceiver:
+  notification_receiver_1:
+    email: test@syngeos.pl
+    notification: '@notification_1'
+  notification_receiver_2:
+    email: test@syngeos.pl
+    notification: '@notification_2'

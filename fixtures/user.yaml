@@ -1,0 +1,6 @@
+App\Entity\User:
+  user_1:
+    email: status-checker@syngeos.pl
+    name: Admin
+    roles: ["ROLE_USER"]
+    password: \$2y\$13\$MdCM2A5iaeLplBEE8x05POi3COaapS8SCpfg5x0Bmsq3o0hGoFgLq
