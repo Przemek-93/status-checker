@@ -52,7 +52,7 @@ final class Version20221109164300 extends AbstractMigration
         );
 
         $notificationTable->addColumn(
-            'sending_frequency',
+            'checking_frequency',
             Types::INTEGER
         );
 

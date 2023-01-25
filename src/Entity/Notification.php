@@ -75,7 +75,7 @@ class Notification
     #[ORM\Column]
     #[Assert\Positive]
     #[Assert\Type(type: 'int')]
-    private ?int $sendingFrequency = null;
+    private ?int $checkingFrequency = null;
 
     #[ORM\Column]
     #[Assert\PositiveOrZero]
@@ -211,14 +211,14 @@ class Notification
         return $this->httpMethod;
     }
 
-    public function getSendingFrequency(): ?int
+    public function getCheckingFrequency(): ?int
     {
-        return $this->sendingFrequency;
+        return $this->checkingFrequency;
     }
 
-    public function setSendingFrequency(int $sendingFrequency): self
+    public function setCheckingFrequency(int $checkingFrequency): self
     {
-        $this->sendingFrequency = $sendingFrequency;
+        $this->checkingFrequency = $checkingFrequency;
 
         return $this;
     }
@@ -243,7 +243,7 @@ class Notification
     public function setSendingDate(?DateTime $sendingDate = null): self
     {
         $this->sendingDate = (new DateTime())
-            ->modify('+ ' . $this->sendingFrequency . ' hours');
+            ->modify('+ ' . $this->checkingFrequency . ' hours');
         if ($sendingDate) {
             $this->sendingDate = $sendingDate;
         }
@@ -324,15 +324,15 @@ class Notification
     #[ORM\PrePersist]
     public function initSendingDate(): self
     {
-        if (!$this->sendingFrequency) {
-            throw new Exception('Sending frequency has not been set.');
+        if (!$this->checkingFrequency) {
+            throw new Exception('Checking frequency has not been set.');
         }
 
         $this->sendingDate = (new DateTime())
             ->modify(
                 sprintf(
                     '+ %d hours',
-                    $this->sendingFrequency
+                    $this->checkingFrequency
                 )
             );
 

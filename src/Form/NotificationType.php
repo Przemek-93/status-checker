@@ -36,7 +36,7 @@ class NotificationType extends AbstractType
             ->add('notificationType', EnumType::class, ['class' => NotificationTypeEnum::class])
             ->add('checkingType', EnumType::class, ['class' => CheckingTypeEnum::class])
             ->add('httpMethod', EnumType::class, ['class' => HttpMethod::class])
-            ->add('sendingFrequency', IntegerType::class, [
+            ->add('checkingFrequency', IntegerType::class, [
                 'attr' => ['placeholder' => 'Every how many hours to check? e.g. 10']
             ])
             ->add('receivers', CollectionType::class, [

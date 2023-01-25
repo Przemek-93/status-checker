@@ -1,19 +1,25 @@
 App\Entity\Notification:
   notification_1:
     url: https://api.syngeos.pl/api/public/sensors
-    receivers: ['@notification_receiver_1']
     notificationType: <(App\Entity\Enums\NotificationType::EMAIL)>
     checkingType: <(App\Entity\Enums\CheckingType::OVERALL)>
     httpMethod: <(App\Entity\Enums\HttpMethod::GET)>
-    sendingFrequency: 5
+    checkingFrequency: 5
     isActive: true
     sendingDate: <(new DateTime())>
   notification_2:
     url: https://api.syngeos.pl/api/public/devices
-    receivers: ['@notification_receiver_2']
     notificationType: <(App\Entity\Enums\NotificationType::EMAIL)>
     checkingType: <(App\Entity\Enums\CheckingType::OVERALL)>
     httpMethod: <(App\Entity\Enums\HttpMethod::GET)>
-    sendingFrequency: 5
+    checkingFrequency: 5
+    isActive: true
+    sendingDate: <(new DateTime())>
+  notification_3:
+    url: https://api.syngeos.pl/api/public/data/device/1330
+    notificationType: <(App\Entity\Enums\NotificationType::EMAIL)>
+    checkingType: <(App\Entity\Enums\CheckingType::ACTUALITY)>
+    httpMethod: <(App\Entity\Enums\HttpMethod::GET)>
+    checkingFrequency: 5
     isActive: true
     sendingDate: <(new DateTime())>
