@@ -22,6 +22,11 @@ class Handler
     ) {
     }
 
+    /**
+     * Handle CLI command
+     * method first checks the added requests
+     * and then sends alerts for faulty/not-fresh ones
+     */
     public function handle(array $notifications): array
     {
         $results = ['failed' => 0, 'sent' => 0];
