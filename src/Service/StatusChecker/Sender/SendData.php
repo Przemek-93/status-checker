@@ -26,9 +26,9 @@ class SendData
         return $this->notification->getUrl();
     }
 
-    public function getReadingStatus(): ?int
+    public function getReadingStatus(): string
     {
-        return $this->reading->getStatus();
+        return $this->reading->getStatus()->value;
     }
 
     public function getReadAt(): ?DateTime

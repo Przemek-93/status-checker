@@ -39,6 +39,20 @@ The system fetch the readings and stores them in a database, it has a number of 
 
 The text file with the cron configuration can be found [here](./cron.txt) 
 
+* main process, to run a check and send an email alert when something goes wrong
+  run `docker-compose exec php bin/console status-checker:execute` - command will first run a checking and check all active requests,
+  then will save the readings to the database and finally will send a notification to the saved notification-email addresses if something is wrong
+  - this command should be executed twice per hour
+
+
+* all emails sent from the platform are handled by symfony messenger (saved in messenger table queue)
+  run `docker-compose exec php bin/console messenger:consume email_sender --time-limit 60 --limit 10` - command will automatically exit once it has processed `10` messages (limit),
+  or been running for `60s` (time limit)
+  - `--time-limit` - running-time of command, passed in seconds
+  - `--limit` - number of processed messages after which the command stops
+  - this command should be executed 5 times per hour
+
+
 * te execute checking statuses
   run `docker-compose exec php bin/console status-checker:check` - command trigger a checking of all active checking-requests
     - this command can be run less frequently, few times (5-6) a day
@@ -46,22 +60,8 @@ The text file with the cron configuration can be found [here](./cron.txt)
 
 * to remove outdated readings
   run `docker-compose exec php bin/console status-checker:remove-readings --readings-count 30` - command will keep the number of `30` most recent readings, the rest will be deleted
-    - `--readings-count` - count of reading that will be retained in the database, defaults to `30` so you can omit this argument
+    - `--readings-count` - count of reading that will be retained in the database, default to `30` so you can omit this argument
     - this command should be executed every hour after status-checker:execute
-
-
-* main process, to run a check and send an email alert when something goes wrong
-  run `docker-compose exec php bin/console status-checker:execute` - command will first run a checking and check all active requests, 
-  then will save the readings to the database and finally will send a notification to the saved notification-email addresses if something is wrong
-    - this command should be executed twice per hour
-
-
-* all emails sent from the platform are handled by symfony messenger (saved in messenger table queue)
-  run `docker-compose exec php bin/console messenger:consume email_sender --time-limit 60 --limit 10` - command will automatically exit once it has processed `10` messages (limit),
-  or been running for `60s` (time limit)
-    - `--time-limit` - running-time of command, passed in seconds
-    - `--limit` - number of processed messages after which the command stops
-    - this command should be executed 5 times per hour
 
 
 ### Testing application

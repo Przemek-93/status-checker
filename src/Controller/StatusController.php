@@ -37,7 +37,16 @@ class StatusController extends AbstractController
         $notifications = $this->notificationRepository->getActiveNotificationWithReadings();
         foreach ($notifications as $notification) {
             try {
-                $notification->addReading($this->checker->check($notification));
+                $notification->addReading(
+                    $this->checker
+                        ->setStrategy(
+                            $notification->getCheckingType()
+                        )
+                        ->check(
+                            $notification->getHttpMethod(),
+                            $notification->getUrl()
+                        )
+                );
             } catch (Throwable $throwable) {
                 $this->logger->error(
                     sprintf(

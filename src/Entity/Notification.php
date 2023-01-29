@@ -303,6 +303,10 @@ class Notification
             ) {
                 $state = NotificationReadingsState::WARNING;
             }
+
+            if ($this->readings->first()->isNotFresh()) {
+                $state = NotificationReadingsState::NOT_FRESH;
+            }
         }
 
         return $state;

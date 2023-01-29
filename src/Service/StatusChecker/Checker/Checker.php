@@ -4,40 +4,55 @@ declare(strict_types=1);
 
 namespace App\Service\StatusChecker\Checker;
 
-use App\Entity\Enums\HttpResponseStatus;
-use App\Entity\Notification;
+use App\Entity\Enums\CheckingType;
+use App\Entity\Enums\HttpMethod;
 use App\Entity\NotificationReading;
+use App\Service\StatusChecker\Checker\Strategy\ActualityChecking;
+use App\Service\StatusChecker\Checker\Strategy\CheckingInterface;
+use App\Service\StatusChecker\Checker\Strategy\OverallChecking;
+use Exception;
+use DateTime;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class Checker
 {
+    protected CheckingInterface $strategy;
+
     public function __construct(
-        protected HttpClientInterface $httpClient,
-        protected ResponseToReadingTransformer $transformer
+        protected HttpClientInterface $client
     ) {
     }
 
-    /**
-     * @SuppressWarnings(PHPMD.StaticAccess)
-     * Avoid using static access to class '\App\Entity\Enums\HttpResponseStatus' in method 'check'
-     */
-    public function check(Notification $notification): NotificationReading
+    public function setStrategy(CheckingType $checkingType): self
     {
-        $response = $this->httpClient->request(
-            $notification->getHttpMethod()->value,
-            $notification->getUrl()
-        );
+        $this->strategy = match ($checkingType) {
+            CheckingType::ACTUALITY => new ActualityChecking(),
+            CheckingType::OVERALL => new OverallChecking()
+        };
 
-        $content = $response->getContent(false);
-        if (mb_strlen($content) >= 2000) {
-            $content = mb_substr($content, 0, 2000) . '...';
+        return $this;
+    }
+
+    public function check(
+        HttpMethod $httpMethod,
+        string $url
+    ): NotificationReading {
+        if (!isset($this->strategy)) {
+            throw new Exception('Firstly set the checking strategy!');
         }
 
-        return $this->transformer->transform(
-            new Response(
-                HttpResponseStatus::from($response->getStatusCode()),
-                json_decode($content, true) ?? [trim($content)]
+        $result = $this->strategy->check(
+            $this->client->request(
+                $httpMethod->value,
+                $url
             )
+        );
+
+        return new NotificationReading(
+            $result->httpStatus,
+            $result->readingStatus,
+            new DateTime(),
+            $result->toArray()
         );
     }
 }

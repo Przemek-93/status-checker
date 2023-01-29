@@ -28,16 +28,23 @@ class Handler
         $sendDataArray = [];
         foreach ($notifications as $notification) {
             try {
-                $reading = $this->checker->check($notification);
+                $reading = $this->checker
+                    ->setStrategy(
+                        $notification->getCheckingType()
+                    )
+                    ->check(
+                        $notification->getHttpMethod(),
+                        $notification->getUrl()
+                    );
                 $notification->addReading($reading);
-                if ($reading->isFailed()) {
+                if ($reading->isFailed() || $reading->isNotFresh()) {
                     foreach ($notification->getReceivers() as $receiver) {
                         $email = $receiver->getEmail();
-                            $sendDataArray[$email][] = new SendData(
-                                $notification,
-                                $reading,
-                                $email
-                            );
+                        $sendDataArray[$email][] = new SendData(
+                            $notification,
+                            $reading,
+                            $email
+                        );
                     }
                 }
 
