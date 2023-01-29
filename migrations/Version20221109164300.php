@@ -34,7 +34,13 @@ final class Version20221109164300 extends AbstractMigration
         );
 
         $notificationTable->addColumn(
-            'type',
+            'notification_type',
+            Types::STRING,
+            ['length' => 10]
+        );
+
+        $notificationTable->addColumn(
+            'checking_type',
             Types::STRING,
             ['length' => 10]
         );
@@ -46,7 +52,7 @@ final class Version20221109164300 extends AbstractMigration
         );
 
         $notificationTable->addColumn(
-            'sending_frequency',
+            'checking_frequency',
             Types::INTEGER
         );
 
@@ -139,8 +145,14 @@ final class Version20221109164300 extends AbstractMigration
         );
 
         $readingTable->addColumn(
-            'status',
+            'http_status',
             Types::INTEGER
+        );
+
+        $readingTable->addColumn(
+            'status',
+            Types::STRING,
+            ['length' => 10]
         );
 
         $readingTable->addColumn(

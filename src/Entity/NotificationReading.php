@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Entity\Enums\HttpResponseStatus;
+use App\Entity\Enums\ReadingStatus;
 use App\Repository\ReadingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
@@ -22,7 +23,18 @@ class NotificationReading
 
     #[ORM\Column(enumType: HttpResponseStatus::class)]
     #[Assert\Type(type: HttpResponseStatus::class)]
-    private HttpResponseStatus $status;
+    private HttpResponseStatus $httpStatus;
+
+    #[ORM\Column(length: 10, enumType: ReadingStatus::class)]
+    #[Assert\Type(type: ReadingStatus::class)]
+    #[Assert\Choice(
+        choices: [
+            ReadingStatus::SUCCESS,
+            ReadingStatus::FAILED,
+            ReadingStatus::NOT_FRESH
+        ]
+    )]
+    private ReadingStatus $status;
 
     #[ORM\Column]
     #[Assert\NotBlank]
@@ -39,10 +51,12 @@ class NotificationReading
     private ?Notification $notification = null;
 
     public function __construct(
-        HttpResponseStatus $status,
+        HttpResponseStatus $httpStatus,
+        ReadingStatus $status,
         DateTime $readAt,
         array $body = [],
     ) {
+        $this->httpStatus = $httpStatus;
         $this->status = $status;
         $this->readAt = $readAt;
         $this->body = $body;
@@ -53,9 +67,14 @@ class NotificationReading
         return $this->id;
     }
 
-    public function getStatus(): ?int
+    public function getHttpStatus(): ?int
     {
-        return $this->status->value;
+        return $this->httpStatus->value;
+    }
+
+    public function getStatus(): ReadingStatus
+    {
+        return $this->status;
     }
 
     public function getBody(): array
@@ -91,6 +110,11 @@ class NotificationReading
 
     public function isFailed(): bool
     {
-        return $this->status->isFailed();
+        return $this->status === ReadingStatus::FAILED;
+    }
+
+    public function isNotFresh(): bool
+    {
+        return $this->status === ReadingStatus::NOT_FRESH;
     }
 }

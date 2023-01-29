@@ -8,14 +8,15 @@
                         {% if app.user %}
                         {% if notifications|length > 0 %}
                             <h5 class="card-header table-responsive font-weight-bold">List of all status-check requests</h5>
-                                <table class="table text-center table-striped" style="table-layout: fixed;">
+                                <table class="table text-center table-striped" style="table-layout: fixed;font-size: 80%">
                                     <thead>
                                         <tr>
                                             <th scope="col" style="width: 4%" class="align-middle">#</th>
                                             <th scope="col" style="width: 26%" class="align-middle">Url</th>
-                                            <th scope="col" style="width: 7%" class="align-middle">Type</th>
+                                            <th scope="col" style="width: 10%" class="align-middle">Notification Type</th>
+                                            <th scope="col" style="width: 10%" class="align-middle">Checking Type</th>
                                             <th scope="col" style="width: 10%" class="align-middle">Checking frequency</th>
-                                            <th scope="col" style="width: 26%" class="align-middle">Receivers</th>
+                                            <th scope="col" style="width: 20%" class="align-middle">Receivers</th>
                                             <th scope="col" style="width: 10%" class="align-middle">Created at</th>
                                             <th scope="col" style="width: 7%" class="align-middle">Active</th>
                                             <th scope="col" style="width: 10%" class="align-middle">Action</th>
@@ -30,8 +31,9 @@
                                             <tr>
                                                 <th scope="row" class="align-middle">{{ key + 1 }}</th>
                                                 <td class="align-middle">{{ item.url }}</td>
-                                                <td class="align-middle">{{ item.type.value }}</td>
-                                                <td class="align-middle">every {{ item.sendingFrequency }} hour/s</td>
+                                                <td class="align-middle">{{ item.notificationType.value }}</td>
+                                                <td class="align-middle">{{ item.checkingType.value }}</td>
+                                                <td class="align-middle">every {{ item.checkingFrequency }} hour/s</td>
                                                 <td class="align-middle">{{ receivers }}</td>
                                                 <td class="align-middle">{{ item.createdAt | date('Y-m-d H:i:s') }}</td>
                                                 <td class="align-middle">{{ item.isActive ? 'Yes' : 'No' }}</td>

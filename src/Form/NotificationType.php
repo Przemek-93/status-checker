@@ -6,7 +6,8 @@ namespace App\Form;
 
 use App\Entity\Enums\HttpMethod;
 use App\Entity\Notification;
-use App\Entity\Enums\NotificationType as TypeEnum;
+use App\Entity\Enums\NotificationType as NotificationTypeEnum;
+use App\Entity\Enums\CheckingType as CheckingTypeEnum;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -32,9 +33,10 @@ class NotificationType extends AbstractType
     {
         $builder
             ->add('url', UrlType::class, ['attr' => ['placeholder' => 'e.g. https://api.syngeos.pl']])
-            ->add('type', EnumType::class, ['class' => TypeEnum::class])
+            ->add('notificationType', EnumType::class, ['class' => NotificationTypeEnum::class])
+            ->add('checkingType', EnumType::class, ['class' => CheckingTypeEnum::class])
             ->add('httpMethod', EnumType::class, ['class' => HttpMethod::class])
-            ->add('sendingFrequency', IntegerType::class, [
+            ->add('checkingFrequency', IntegerType::class, [
                 'attr' => ['placeholder' => 'Every how many hours to check? e.g. 10']
             ])
             ->add('receivers', CollectionType::class, [

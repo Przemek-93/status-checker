@@ -39,7 +39,16 @@ class CheckStatusesCommand extends Command
         foreach ($notifications as $notification) {
             $symfonyStyle->progressAdvance();
             try {
-                $notification->addReading($this->checker->check($notification));
+                $notification->addReading(
+                    $this->checker
+                        ->setStrategy(
+                            $notification->getCheckingType()
+                        )
+                        ->check(
+                            $notification->getHttpMethod(),
+                            $notification->getUrl()
+                        )
+                );
             } catch (Throwable $throwable) {
                 $this->logger->error(
                     sprintf(

@@ -314,20 +314,24 @@
                                                            role="presentation">
 
                                                         <tr class="font-size-15">
-                                                            <th align="left" width="55%">Adres url</th>
-                                                            <th align="center" width="13%">Status</th>
-                                                            <th align="right" width="32%">Odczytano</th>
+                                                            <th align="left" width="57%">Adres url</th>
+                                                            <th align="center" width="20%">Status</th>
+                                                            <th align="right" width="23%">Odczytano</th>
                                                         </tr>
                                                         {% for sendData in data %}
                                                             <tr>
                                                                 <td align="left"
-                                                                    width="55%"
-                                                                    class="table-readings-content">{{ sendData.notificationUrl }}</td>
+                                                                    width="57%"
+                                                                    class="table-readings-content">
+                                                                    <a href="{{ sendData.notificationUrl }}" target="_blank">
+                                                                        {{ sendData.notificationUrl }}
+                                                                    </a>
+                                                                </td>
                                                                 <td align="center"
-                                                                    width="13%"
+                                                                    width="20%"
                                                                     class="table-readings-content">{{ sendData.readingStatus }}</td>
                                                                 <td align="right"
-                                                                    width="32%"
+                                                                    width="23%"
                                                                     class="table-readings-content">{{ sendData.readAt | date('Y-m-d H:i:s') }}</td>
                                                             </tr>
                                                         {% endfor %}
