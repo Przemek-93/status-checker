@@ -15,6 +15,8 @@ enum HttpResponseStatus: int
     case NO_CONTENT = 204;
     case PARTIAL_CONTENT = 206;
 
+    case MULTIPLE_CHOICES = 300;
+
     case BAD_REQUEST = 400;
     case UNAUTHORIZED = 401;
     case FORBIDDEN = 403;
@@ -29,14 +31,7 @@ enum HttpResponseStatus: int
 
     public function isFailed(): bool
     {
-        $statuses = [
-            self::OK, self::CREATED, self::ACCEPTED,
-            self::NO_CONTENT, self::PARTIAL_CONTENT,
-        ];
-        if (in_array($this, $statuses)) {
-            return false;
-        }
-
-        return true;
+        return $this === self::CONTINUE_STATUS ||
+            ($this >= self::OK && $this < self::MULTIPLE_CHOICES);
     }
 }
