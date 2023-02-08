@@ -287,24 +287,24 @@ class Notification
         return $this->updatedAt;
     }
 
+    /**
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     * Avoid unused parameters such as $key.
+     */
     public function getReadingsState(): NotificationReadingsState
     {
         $state = NotificationReadingsState::OPERATIONAL;
         if ($this->readings->count()) {
-            $this->readings->map(function (NotificationReading $reading) use (&$state): void {
-                if ($reading->isFailed()) {
-                    $state = NotificationReadingsState::ERROR;
-                }
-            });
+            $state  = $this->readings->forAll(
+                fn (int $key, NotificationReading $reading): bool => !$reading->isFailed()
+            ) ? NotificationReadingsState::OPERATIONAL : NotificationReadingsState::ERROR;
 
-            if (
-                $state === NotificationReadingsState::ERROR &&
-                !$this->readings->first()->isFailed()
-            ) {
+            $firstReading = $this->readings->first();
+            if ($state === NotificationReadingsState::ERROR && !$firstReading->isFailed()) {
                 $state = NotificationReadingsState::WARNING;
             }
 
-            if ($this->readings->first()->isNotFresh()) {
+            if ($firstReading->isNotFresh()) {
                 $state = NotificationReadingsState::NOT_FRESH;
             }
         }
