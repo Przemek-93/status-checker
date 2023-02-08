@@ -10,7 +10,7 @@ use App\Service\StatusChecker\Checker\Result;
 use DateTime;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class ActualityChecking implements CheckingInterface
+class DataFreshnessCheck implements CheckInterface
 {
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)
@@ -31,12 +31,12 @@ class ActualityChecking implements CheckingInterface
 
         return new Result(
             $httpCode,
-            $this->checkActuality($arrayContent),
+            $this->checkFreshness($arrayContent),
             $jsonContent
         );
     }
 
-    protected function checkActuality(array $arrayContent): ReadingStatus
+    protected function checkFreshness(array $arrayContent): ReadingStatus
     {
         foreach ($arrayContent['sensors'] as $sensor) {
             $readDate = new DateTime($sensor['data'][0]['read_at']);

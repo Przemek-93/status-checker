@@ -9,7 +9,7 @@ use App\Entity\Enums\ReadingStatus;
 use App\Service\StatusChecker\Checker\Result;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-class OverallChecking implements CheckingInterface
+class HttpStatusCheck implements CheckInterface
 {
     /**
      * @SuppressWarnings(PHPMD.StaticAccess)

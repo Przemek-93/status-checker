@@ -2,7 +2,7 @@ App\Entity\Notification:
   notification_1:
     url: https://api.syngeos.pl/api/public/sensors
     notificationType: <(App\Entity\Enums\NotificationType::EMAIL)>
-    checkingType: <(App\Entity\Enums\CheckingType::OVERALL)>
+    checkingType: <(App\Entity\Enums\CheckingType::HTTP_STATUS)>
     httpMethod: <(App\Entity\Enums\HttpMethod::GET)>
     checkingFrequency: 5
     isActive: true
@@ -10,7 +10,7 @@ App\Entity\Notification:
   notification_2:
     url: https://api.syngeos.pl/api/public/devices
     notificationType: <(App\Entity\Enums\NotificationType::EMAIL)>
-    checkingType: <(App\Entity\Enums\CheckingType::OVERALL)>
+    checkingType: <(App\Entity\Enums\CheckingType::HTTP_STATUS)>
     httpMethod: <(App\Entity\Enums\HttpMethod::GET)>
     checkingFrequency: 5
     isActive: true
@@ -18,7 +18,7 @@ App\Entity\Notification:
   notification_3:
     url: https://api.syngeos.pl/api/public/data/device/1330
     notificationType: <(App\Entity\Enums\NotificationType::EMAIL)>
-    checkingType: <(App\Entity\Enums\CheckingType::ACTUALITY)>
+    checkingType: <(App\Entity\Enums\CheckingType::DATA_FRESHNESS)>
     httpMethod: <(App\Entity\Enums\HttpMethod::GET)>
     checkingFrequency: 5
     isActive: true

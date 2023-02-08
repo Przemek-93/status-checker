@@ -7,7 +7,7 @@ namespace App\Service\StatusChecker\Checker\Strategy;
 use App\Service\StatusChecker\Checker\Result;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
-interface CheckingInterface
+interface CheckInterface
 {
     public function check(ResponseInterface $response): Result;
 }

@@ -7,16 +7,16 @@ namespace App\Service\StatusChecker\Checker;
 use App\Entity\Enums\CheckingType;
 use App\Entity\Enums\HttpMethod;
 use App\Entity\NotificationReading;
-use App\Service\StatusChecker\Checker\Strategy\ActualityChecking;
-use App\Service\StatusChecker\Checker\Strategy\CheckingInterface;
-use App\Service\StatusChecker\Checker\Strategy\OverallChecking;
+use App\Service\StatusChecker\Checker\Strategy\CheckInterface;
+use App\Service\StatusChecker\Checker\Strategy\DataFreshnessCheck;
+use App\Service\StatusChecker\Checker\Strategy\HttpStatusCheck;
 use Exception;
 use DateTime;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class CheckerContext
 {
-    protected CheckingInterface $strategy;
+    protected CheckInterface $strategy;
 
     public function __construct(
         protected HttpClientInterface $client
@@ -26,8 +26,8 @@ class CheckerContext
     public function setStrategy(CheckingType $checkingType): self
     {
         $this->strategy = match ($checkingType) {
-            CheckingType::ACTUALITY => new ActualityChecking(),
-            CheckingType::OVERALL => new OverallChecking()
+            CheckingType::DATA_FRESHNESS => new DataFreshnessCheck(),
+            CheckingType::HTTP_STATUS => new HttpStatusCheck()
         };
 
         return $this;

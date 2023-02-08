@@ -64,7 +64,7 @@ class Notification
 
     #[ORM\Column(length: 10, enumType: CheckingType::class)]
     #[Assert\Type(type: CheckingType::class)]
-    #[Assert\Choice(choices: [CheckingType::OVERALL, CheckingType::ACTUALITY])]
+    #[Assert\Choice(choices: [CheckingType::HTTP_STATUS, CheckingType::DATA_FRESHNESS])]
     private CheckingType $checkingType;
 
     #[ORM\Column(length: 10, enumType: HttpMethod::class)]

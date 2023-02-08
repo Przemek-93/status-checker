@@ -6,6 +6,6 @@ namespace App\Entity\Enums;
 
 enum CheckingType: string
 {
-    case OVERALL = 'OVERALL';
-    case ACTUALITY = 'ACTUALITY';
+    case DATA_FRESHNESS = 'DATA_FRESHNESS';
+    case HTTP_STATUS = 'HTTP_STATUS';
 }
