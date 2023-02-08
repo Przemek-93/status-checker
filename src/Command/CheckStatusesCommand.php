@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Repository\NotificationRepository;
-use App\Service\StatusChecker\Checker\Checker;
+use App\Service\StatusChecker\Checker\CheckerContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -23,7 +23,7 @@ class CheckStatusesCommand extends Command
 {
     public function __construct(
         protected NotificationRepository $notificationRepository,
-        protected Checker $checker,
+        protected CheckerContext $checker,
         protected EntityManagerInterface $entityManager,
         protected LoggerInterface $logger
     ) {

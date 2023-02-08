@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\NotificationRepository;
-use App\Service\StatusChecker\Checker\Checker;
+use App\Service\StatusChecker\Checker\CheckerContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +18,7 @@ class StatusController extends AbstractController
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly NotificationRepository $notificationRepository,
-        private readonly Checker $checker,
+        private readonly CheckerContext $checker,
         private readonly LoggerInterface $logger
     ) {
     }

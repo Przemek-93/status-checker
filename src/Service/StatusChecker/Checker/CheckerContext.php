@@ -14,7 +14,7 @@ use Exception;
 use DateTime;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-class Checker
+class CheckerContext
 {
     protected CheckingInterface $strategy;
 

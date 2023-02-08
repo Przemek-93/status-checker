@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\StatusChecker;
 
-use App\Service\StatusChecker\Checker\Checker;
+use App\Service\StatusChecker\Checker\CheckerContext;
 use App\Service\StatusChecker\Sender\SendData;
 use App\Service\StatusChecker\Sender\Sender;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +15,7 @@ use Throwable;
 class Handler
 {
     public function __construct(
-        protected readonly Checker $checker,
+        protected readonly CheckerContext $checker,
         protected readonly LoggerInterface $logger,
         protected readonly Sender $sender,
         protected readonly EntityManagerInterface $entityManager
